@@ -9,7 +9,7 @@ php:
 env: TMPDIR=/tmp
 
 install:
- - sh ./tests/install_dependencies.sh
+ - if [[ "$TRAVIS_PHP_VERSION" == "5.2" ]]; then sh ./tests/php52_install_dependencies.sh; fi
  - phpenv rehash
 
 services:
@@ -32,10 +32,14 @@ before_script:
   - ./bin/couchbase-cli bucket-create -c 127.0.0.1:8091 --bucket=testing --bucket-type=couchbase --bucket-port=11211 --bucket-ramsize=512  --bucket-replica=1 -u Administrator -p password
   - sleep 10
   - ./bin/cbq -e http://127.0.0.1:8091 --script "CREATE PRIMARY INDEX ON testing USING GSI;"
+  - cd $TRAVIS_BUILD_DIR
+  - if [[ "$TRAVIS_PHP_VERSION" != "5.2" ]]; then travis_retry composer self-update; fi
+  - if [[ "$TRAVIS_PHP_VERSION" != "5.2" ]]; then travis_retry composer install --no-interaction --prefer-source --dev; fi
   - mysql -e 'create database zftest;'
   - pecl install couchbase-2.2.4
   - psql -c 'create database zftest;' -U postgres
-  - cd $TRAVIS_BUILD_DIR
+  - if [[ "$TRAVIS_PHP_VERSION" != "5.2" ]]; then phpenv config-add tests/config.ini; fi
+  - if [[ "$TRAVIS_PHP_VERSION" == "5.2" ]]; then phpenv config-add tests/php52_config.ini; fi
   - echo "extension = memcache.so" >> ~/.phpenv/versions/$(phpenv version-name)/etc/php.ini
   - echo "extension = memcached.so" >> ~/.phpenv/versions/$(phpenv version-name)/etc/php.ini
   - echo "extension = redis.so" >> ~/.phpenv/versions/$(phpenv version-name)/etc/php.ini

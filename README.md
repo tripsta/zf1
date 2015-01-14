@@ -12,7 +12,7 @@ RELEASE INFORMATION
 Zend Framework 1.12.9Release.
 Released on September 17, 2014.
 
-IMPORTANT FIXES FOR 1.12.10
+IMPORTANT FIXES FOR 1.12.11
 ---------------------------
 
 See http://framework.zend.com/changelog for full details.

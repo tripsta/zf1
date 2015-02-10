@@ -1195,6 +1195,20 @@ class Zend_Db_Select
             $tmp .= $this->_getQuotedSchema($table['schema']);
             $tmp .= $this->_getQuotedTable($table['tableName'], $correlationName);
 
+            // Add use index statement after FROM, before joins (if applicable)
+            if (!empty($this->_parts[self::USE_INDEX])) {
+                $tmp .= ' ' . self::SQL_USE_INDEX . '(' . implode(',', $this->_parts[self::USE_INDEX]) . ')';
+                unset($this->_parts[self::USE_INDEX]);
+            }
+            if (!empty($this->_parts[self::FORCE_INDEX])) {
+                $tmp .= ' ' . self::SQL_FORCE_INDEX . '(' . implode(',', $this->_parts[self::FORCE_INDEX]) . ')';
+                unset($this->_parts[self::FORCE_INDEX]);
+            }
+            if (!empty($this->_parts[self::IGNORE_INDEX])) {
+                $tmp .= ' ' . self::SQL_IGNORE_INDEX . '(' . implode(',', $this->_parts[self::IGNORE_INDEX]) . ')';
+                unset($this->_parts[self::IGNORE_INDEX]);
+            }
+
             // Add join conditions (if applicable)
             if (!empty($from) && ! empty($table['joinCondition'])) {
                 $tmp .= ' ' . self::SQL_ON . ' ' . $table['joinCondition'];
@@ -1422,6 +1436,51 @@ class Zend_Db_Select
             $sql = '';
         }
         return (string)$sql;
+    }
+
+    /**
+     * Specify index to use. Works only on mysql
+     *
+     * @param string $index
+     * @return Zend_Db_Select
+     */
+    public function useIndex($index)
+    {
+        if (!is_array($index)) {
+            $index = array($index);
+        }
+        $this->_parts[self::USE_INDEX] = $index;
+        return $this;
+    }
+
+    /**
+     * Force index. Works only on mysql
+     *
+     * @param string $index
+     * @return Zend_Db_Select
+     */
+    public function forceIndex($index)
+    {
+        if (!is_array($index)) {
+            $index = array($index);
+        }
+        $this->_parts[self::FORCE_INDEX] = $index;
+        return $this;
+    }
+
+    /**
+     * Ignore index. Works only on mysql
+     *
+     * @param string $index
+     * @return Zend_Db_Select
+     */
+    public function ignoreIndex($index)
+    {
+        if (!is_array($index)) {
+            $index = array($index);
+        }
+        $this->_parts[self::IGNORE_INDEX] = $index;
+        return $this;
     }
 
 }

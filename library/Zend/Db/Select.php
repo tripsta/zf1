@@ -86,7 +86,6 @@ class Zend_Db_Select
     const SQL_USE_INDEX  = 'USE INDEX';
     const SQL_FORCE_INDEX = 'FORCE INDEX';
     const SQL_IGNORE_INDEX = 'IGNORE INDEX';
-
     const REGEX_COLUMN_EXPR = '/^([\w]*\s*\(([^\(\)]|(?1))*\))$/';
 
     /**

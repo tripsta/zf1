@@ -9,15 +9,11 @@ Tripsta-1.12.9: [![Build Status](https://travis-ci.org/tripsta/zf1.svg?branch=tr
 RELEASE INFORMATION
 ===================
 
-Zend Framework 1.12.9Release.
-Released on September 17, 2014.
+Zend Framework 1.12.12dev Release.
+Released on MMMMMMMM DD, YYYY.
 
-IMPORTANT FIXES FOR 1.12.11
+IMPORTANT FIXES FOR 1.12.12
 ---------------------------
-
-- [#440](https://github.com/zendframework/zf1/issue/506) provides a patch that
-  fixes a bug introduced in 1.12.10 with regards to how the view renderer
-  controller helper resolves a controller's name.
 
 See http://framework.zend.com/changelog for full details.
 

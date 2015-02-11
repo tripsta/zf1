@@ -15,6 +15,10 @@ Released on September 17, 2014.
 IMPORTANT FIXES FOR 1.12.11
 ---------------------------
 
+- [#440](https://github.com/zendframework/zf1/issue/506) provides a patch that
+  fixes a bug introduced in 1.12.10 with regards to how the view renderer
+  controller helper resolves a controller's name.
+
 See http://framework.zend.com/changelog for full details.
 
 NEW FEATURES

@@ -9,8 +9,8 @@ Tripsta-1.12.9: [![Build Status](https://travis-ci.org/tripsta/zf1.svg?branch=tr
 RELEASE INFORMATION
 ===================
 
-Zend Framework 1.12.12dev Release.
-Released on MMMMMMMM DD, YYYY.
+Zend Framework 1.12.12 Release.
+Released on May 19, 2015.
 
 IMPORTANT FIXES FOR 1.12.12
 ---------------------------

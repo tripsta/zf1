@@ -7276,5 +7276,9 @@ class Zend_Locale_DataTest extends PHPUnit_Framework_TestCase
         // Test with value
         $result = Zend_Locale_Data::getContent('de_DE', 'parentlocale', 'zh_Hant_MO');
         $this->assertEquals('zh_Hant_HK', $result);
+
+        // Test without parent locale
+        $result = Zend_Locale_Data::getContent('de_DE', 'parentlocale');
+        $this->assertFalse($result);
     }
 }

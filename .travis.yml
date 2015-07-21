@@ -35,7 +35,7 @@ before_script:
 script:
  - cd tests/
  - php runalltests.php
- 
+
 matrix:
   allow_failures:
    - php: 7

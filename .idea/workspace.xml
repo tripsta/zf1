@@ -5,10 +5,7 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="23b9f80b-bb21-4c7b-82ba-b5ba59a84678" name="Default" comment="">
-      <change beforePath="$PROJECT_DIR$/library/Zend/Locale/Data/sq.xml" beforeDir="false" afterPath="$PROJECT_DIR$/library/Zend/Locale/Data/sq.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/library/Zend/Locale/Data/supplementalData.xml" beforeDir="false" afterPath="$PROJECT_DIR$/library/Zend/Locale/Data/supplementalData.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/tests/Zend/Locale/DataTest.php" beforeDir="false" afterPath="$PROJECT_DIR$/tests/Zend/Locale/DataTest.php" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/tests/Zend/Locale/FunctionalTest.php" beforeDir="false" afterPath="$PROJECT_DIR$/tests/Zend/Locale/FunctionalTest.php" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/tests/Zend/DateTest.php" beforeDir="false" afterPath="$PROJECT_DIR$/tests/Zend/DateTest.php" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />

@@ -2119,7 +2119,7 @@ class Zend_Locale_DataTest extends TestCase
             'TM' => 'TMT',
             'TN' => 'TND',
             'TO' => 'TOP',
-            'TP' => 'TPE',
+            'TP' => 'EUR',
             'TR' => 'TRY',
             'TT' => 'TTD',
             'TV' => 'AUD',
@@ -2165,7 +2165,7 @@ class Zend_Locale_DataTest extends TestCase
     {
         $value = Zend_Locale_Data::getList('de_AT', 'regiontocurrency');
         $result = [
-            'EUR' => '150 AD AL AT AX BE BG BL CY DE EA EE ES EU FI FR GF GP GR IC IE IT LT LU LV MC ME MF MQ MT NL PM PT RE SI SK SM TF VA XK YT',
+            'EUR' => '150 AD AL AT AX BE BG BL CY DE EA EE ES EU FI FR GF GP GR IC IE IT LT LU LV MC ME MF MQ MT NL PM PT RE SI SK SM TF TP VA XK YT',
             'SHP' => 'AC SH',
             'AED' => 'AE',
             'AFN' => 'AF',
@@ -2307,7 +2307,6 @@ class Zend_Locale_DataTest extends TestCase
             'TMT' => 'TM',
             'TND' => 'TN',
             'TOP' => 'TO',
-            'TPE' => 'TP',
             'TRY' => 'TR',
             'TTD' => 'TT',
             'TWD' => 'TW',
@@ -2331,7 +2330,7 @@ class Zend_Locale_DataTest extends TestCase
 
         $value = Zend_Locale_Data::getContent('de_AT', 'regiontocurrency', 'EUR');
         $this->assertEquals(
-            "150 AD AL AT AX BE BG BL CY DE EA EE ES EU FI FR GF GP GR IC IE IT LT LU LV MC ME MF MQ MT NL PM PT RE SI SK SM TF VA XK YT",
+            "150 AD AL AT AX BE BG BL CY DE EA EE ES EU FI FR GF GP GR IC IE IT LT LU LV MC ME MF MQ MT NL PM PT RE SI SK SM TF TP VA XK YT",
             $value
         );
     }

@@ -119,6 +119,16 @@ class Zend_RegistryTest extends TestCase
         $this->assertTrue(Zend_Registry::isRegistered('foo'));
     }
 
+    public function testRegistryRemoveAndNotRegistered()
+    {
+        $this->assertFalse(Zend_Registry::isRegistered('foo'));
+        Zend_Registry::set('foo', 'bar');
+        $this->assertTrue(Zend_Registry::isRegistered('foo'));
+
+        Zend_Registry::remove('foo');
+        $this->assertFalse(Zend_Registry::isRegistered('foo'));
+    }
+
     public function testRegistryGet()
     {
         Zend_Registry::set('foo', 'bar');

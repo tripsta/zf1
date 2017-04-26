@@ -5,10 +5,9 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="23b9f80b-bb21-4c7b-82ba-b5ba59a84678" name="Default" comment="">
-      <change afterPath="$PROJECT_DIR$/library/Zend/Cache/Backend/Couchbase.php" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/tests/Zend/Cache/CouchbaseBackendTest.php" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.travis.yml" beforeDir="false" afterPath="$PROJECT_DIR$/.travis.yml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/library/Zend/Cache/Backend/Rediscluster.php" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/tests/Zend/Cache/RedisclusterBackendTest.php" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/tests/TestConfiguration.php.dist" beforeDir="false" afterPath="$PROJECT_DIR$/tests/TestConfiguration.php.dist" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/tests/Zend/Cache/AllTests.php" beforeDir="false" afterPath="$PROJECT_DIR$/tests/Zend/Cache/AllTests.php" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/tests/Zend/Cache/SkipTests.php" beforeDir="false" afterPath="$PROJECT_DIR$/tests/Zend/Cache/SkipTests.php" afterDir="false" />
     </list>

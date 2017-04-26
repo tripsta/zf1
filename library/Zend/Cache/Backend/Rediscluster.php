@@ -52,7 +52,7 @@ require_once 'Zend/Cache/Backend/ExtendedInterface.php';
  */
 require_once 'Zend/Cache/Backend.php';
 
-class Zend_Cache_Backend_RedisCluster extends Zend_Cache_Backend implements Zend_Cache_Backend_ExtendedInterface
+class Zend_Cache_Backend_Rediscluster extends Zend_Cache_Backend implements Zend_Cache_Backend_ExtendedInterface
 {
 	/**
 	 * Default Values
@@ -61,17 +61,12 @@ class Zend_Cache_Backend_RedisCluster extends Zend_Cache_Backend implements Zend
 	const DEFAULT_PORT = 30001;
 	const DEFAULT_TIMEOUT = 1.5;
 	const DEFAULT_READ_TIMEOUT = 2.0;
-	const DEFAULT_FAILOVER = 'distribute';
-	const OPT_SLAVE_FAILOVER = 5;
-	const REDIS_FAILOVER_DISTRIBUTE = 2;
-	const REDIS_FAILOVER_ERROR = 1;
-	const COMPRESS_PREFIX = ":\x1f\x8b";
 
 	/**
 	 * Log message
 	 */
-	const METHOD_UNSUPPORTED_BY_REDISCLUSTER_BACKEND = 'method unsupported by Zend_Cache_Backend_RedisCluster';
-	const TAGS_UNSUPPORTED_BY_REDISCLUSTER_BACKEND = 'tags unsupported by Zend_Cache_Backend_RedisCluster';
+	const METHOD_UNSUPPORTED_BY_REDIS_BACKEND = 'method unsupported by Zend_Cache_Backend_Redis';
+	const TAGS_UNSUPPORTED_BY_REDIS_BACKEND = 'tags unsupported by Zend_Cache_Backend_Redis';
 
 	/**
 	 * options
@@ -85,19 +80,8 @@ class Zend_Cache_Backend_RedisCluster extends Zend_Cache_Backend implements Zend
 		],
 		'timeout' => self::DEFAULT_TIMEOUT,
 		'read_timeout' => self::DEFAULT_READ_TIMEOUT,
-		'key_prefix' => '',
-		'write_control' => false,
+		'key_prefix' => ''
 	];
-
-	/**
-	 * @var int
-	 */
-	protected $_compressThreshold = 20480;
-
-	/**
-	 * @var string
-	 */
-	protected $_compressionLib;
 
 	/**
 	 * Redis object
@@ -105,11 +89,6 @@ class Zend_Cache_Backend_RedisCluster extends Zend_Cache_Backend implements Zend
 	 * @var mixed redis object
 	 */
 	protected $_redis = null;
-
-	/**
-	 * @var int
-	 */
-	protected $_compressData = 3;
 
 	/**
 	 * Constructor
@@ -128,18 +107,7 @@ class Zend_Cache_Backend_RedisCluster extends Zend_Cache_Backend implements Zend
 		}
 		$serverHosts[] = $this->_options['timeout'];
 		$serverHosts[] = $this->_options['read_timeout'];
-		$this->_redis = new RedisCluster(null, $serverHosts);
-		$this->_redis->setOption(self::OPT_SLAVE_FAILOVER, self::REDIS_FAILOVER_DISTRIBUTE);
-
-		if (isset($options['compression_lib'])) {
-			$this->_compressionLib = $options['compression_lib'];
-		} else if (function_exists('snappy_compress')) {
-			$this->_compressionLib = 'snappy';
-		} else {
-			$this->_compressionLib = 'gzip';
-		}
-
-		$this->_compressPrefix = substr($this->_compressionLib, 0, 2) . self::COMPRESS_PREFIX;
+		$this->_redis = new RedisCluster(NULL, $serverHosts);
 	}
 
 	/**
@@ -156,7 +124,7 @@ class Zend_Cache_Backend_RedisCluster extends Zend_Cache_Backend implements Zend
 		}
 		$data = $this->_redis->get($id);
 		if ($data != false) {
-			return $this->_decodeData($data);
+			return $data;
 		}
 		return false;
 	}
@@ -186,7 +154,7 @@ class Zend_Cache_Backend_RedisCluster extends Zend_Cache_Backend implements Zend
 	 * @param  string $id Cache id
 	 * @param  mixed $tags Array of strings, the cache record will be tagged by each string entry, if false, key
 	 *                                  can only be read if $doNotTestCacheValidity is true
-	 * @param  int|bool $specificLifetime If != false, set a specific lifetime for this cache record (null => infinite lifetime)
+	 * @param  int $specificLifetime If != false, set a specific lifetime for this cache record (null => infinite lifetime)
 	 * @return boolean true if no problem
 	 */
 	public function save($data, $id, $tags = [], $specificLifetime = false)
@@ -195,20 +163,18 @@ class Zend_Cache_Backend_RedisCluster extends Zend_Cache_Backend implements Zend
 			return false;
 		}
 
-		$compressedData = $this->_encodeData($data, $this->_compressData);
-
 		$lifetime = $this->getLifetime($specificLifetime);
 		if ($lifetime === null) {
-			$return = $this->_redis->set($id, $compressedData);
+			$return = $this->_redis->set($id, $data);
 		} else {
-			$return = $this->_redis->setex($id, $lifetime, $compressedData);
+			$return = $this->_redis->setex($id, $lifetime, $data);
 		}
 		if ($return === false) {
 			$rsCode = $this->_redis->getLastError();
 			$this->_log("RedisCluster::set() failed: [{$rsCode}]");
 		}
 		if (count($tags) > 0) {
-			$this->_log(self::METHOD_UNSUPPORTED_BY_REDISCLUSTER_BACKEND);
+			$this->_log(self::METHOD_UNSUPPORTED_BY_REDIS_BACKEND);
 		}
 
 		return $return;
@@ -222,7 +188,7 @@ class Zend_Cache_Backend_RedisCluster extends Zend_Cache_Backend implements Zend
 	 */
 	public function remove($id)
 	{
-		return (boolean)$this->_redis->del($id);
+		return (boolean) $this->_redis->del($id);
 	}
 
 	/**
@@ -252,7 +218,7 @@ class Zend_Cache_Backend_RedisCluster extends Zend_Cache_Backend implements Zend
 			}
 			return $success_times == count($masters);
 		} else {
-			$this->_log(self::METHOD_UNSUPPORTED_BY_REDISCLUSTER_BACKEND);
+			$this->_log(self::METHOD_UNSUPPORTED_BY_REDIS_BACKEND);
 		}
 		return false;
 	}
@@ -331,7 +297,7 @@ class Zend_Cache_Backend_RedisCluster extends Zend_Cache_Backend implements Zend
 	 */
 	public function clearByNamespace($namespace)
 	{
-		$namespace = (string)$namespace;
+		$namespace = (string) $namespace;
 		if ($namespace === '') {
 			return false;
 		}
@@ -347,7 +313,7 @@ class Zend_Cache_Backend_RedisCluster extends Zend_Cache_Backend implements Zend
 	 */
 	public function getKeysByNamespace($namespace)
 	{
-		$namespace = (string)$namespace;
+		$namespace = (string) $namespace;
 		if ($namespace === '') {
 			return false;
 		}
@@ -359,11 +325,11 @@ class Zend_Cache_Backend_RedisCluster extends Zend_Cache_Backend implements Zend
 	 * Get Values of given namespace
 	 *
 	 * @param string $namespace
-	 * @return mixed
+	 * @return bool
 	 */
 	public function getValuesByNamespace($namespace)
 	{
-		$namespace = (string)$namespace;
+		$namespace = (string) $namespace;
 		if ($namespace === '') {
 			return false;
 		}
@@ -383,7 +349,7 @@ class Zend_Cache_Backend_RedisCluster extends Zend_Cache_Backend implements Zend
 	 */
 	public function removeTTL($id)
 	{
-		return (boolean)$this->_redis->persist($id);
+		return (boolean) $this->_redis->persist($id);
 	}
 
 	/**
@@ -394,7 +360,7 @@ class Zend_Cache_Backend_RedisCluster extends Zend_Cache_Backend implements Zend
 	 */
 	public function getFillingPercentage()
 	{
-		$this->_log(self::METHOD_UNSUPPORTED_BY_REDISCLUSTER_BACKEND);
+		$this->_log(self::METHOD_UNSUPPORTED_BY_REDIS_BACKEND);
 		return [];
 	}
 
@@ -405,7 +371,7 @@ class Zend_Cache_Backend_RedisCluster extends Zend_Cache_Backend implements Zend
 	 */
 	public function getIds()
 	{
-		$this->_log(self::METHOD_UNSUPPORTED_BY_REDISCLUSTER_BACKEND);
+		$this->_log(self::METHOD_UNSUPPORTED_BY_REDIS_BACKEND);
 		return [];
 	}
 
@@ -416,7 +382,7 @@ class Zend_Cache_Backend_RedisCluster extends Zend_Cache_Backend implements Zend
 	 */
 	public function getTags()
 	{
-		$this->_log(self::METHOD_UNSUPPORTED_BY_REDISCLUSTER_BACKEND);
+		$this->_log(self::METHOD_UNSUPPORTED_BY_REDIS_BACKEND);
 		return [];
 	}
 
@@ -430,8 +396,8 @@ class Zend_Cache_Backend_RedisCluster extends Zend_Cache_Backend implements Zend
 	 */
 	public function getIdsMatchingTags($tags = [])
 	{
-		$this->_log(self::METHOD_UNSUPPORTED_BY_REDISCLUSTER_BACKEND);
-		return [];
+		$this->_log(self::METHOD_UNSUPPORTED_BY_REDIS_BACKEND);
+		return array();
 	}
 
 	/**
@@ -444,7 +410,7 @@ class Zend_Cache_Backend_RedisCluster extends Zend_Cache_Backend implements Zend
 	 */
 	public function getIdsNotMatchingTags($tags = [])
 	{
-		$this->_log(self::METHOD_UNSUPPORTED_BY_REDISCLUSTER_BACKEND);
+		$this->_log(self::METHOD_UNSUPPORTED_BY_REDIS_BACKEND);
 		return [];
 	}
 
@@ -458,8 +424,21 @@ class Zend_Cache_Backend_RedisCluster extends Zend_Cache_Backend implements Zend
 	 */
 	public function getIdsMatchingAnyTags($tags = array())
 	{
-		$this->_log(self::METHOD_UNSUPPORTED_BY_REDISCLUSTER_BACKEND);
-		return [];
+		if (!$this->_redis)
+			return [];
+
+		if (!$tags)
+			return [];
+		if ($tags && is_string($tags))
+			$tags = [$tags];
+
+		$return = [];
+		foreach ($tags as $tag) {
+			foreach ($this->_redis->sMembers($this->_keyFromTag($tag)) as $id) {
+				$return[] = $id;
+			}
+		}
+		return $return;
 	}
 
 	/**
@@ -485,7 +464,7 @@ class Zend_Cache_Backend_RedisCluster extends Zend_Cache_Backend implements Zend
 	{
 		$data = [];
 		$result = $this->_redis->mGet($ids);
-		foreach ($ids as $key => $value) {
+		foreach($ids as $key => $value) {
 			$data[$value] = $result[$key];
 		}
 		return $data;
@@ -499,7 +478,7 @@ class Zend_Cache_Backend_RedisCluster extends Zend_Cache_Backend implements Zend
 	 * @param boolean $specificLifetime
 	 * @return boolean
 	 */
-	public function saveMulti($data, $tags = [], $specificLifetime = false)
+	public function saveMulti($data, $tags =[], $specificLifetime = false)
 	{
 		$result = false;
 		if (is_array($data)) {
@@ -513,7 +492,7 @@ class Zend_Cache_Backend_RedisCluster extends Zend_Cache_Backend implements Zend
 				}
 			}
 			if (count($tags) > 0) {
-				$this->_log(self::METHOD_UNSUPPORTED_BY_REDISCLUSTER_BACKEND);
+				$this->_log(self::METHOD_UNSUPPORTED_BY_REDIS_BACKEND);
 			}
 		}
 		return $result;
@@ -553,53 +532,5 @@ class Zend_Cache_Backend_RedisCluster extends Zend_Cache_Backend implements Zend
 			'infinite_lifetime' => false,
 			'get_list' => false
 		];
-	}
-
-	/**
-	 * @param string $data
-	 * @param int $level
-	 * @throws Exception
-	 * @return string
-	 */
-	protected function _encodeData($data, $level)
-	{
-		if ($level && strlen($data) >= $this->_compressThreshold) {
-			switch ($this->_compressionLib) {
-				case 'snappy':
-					$data = snappy_compress($data);
-					break;
-				case 'lzf':
-					$data = lzf_compress($data);
-					break;
-				case 'gzip':
-					$data = gzcompress($data, $level);
-					break;
-			}
-			if (!$data) {
-				throw new Exception("Could not compress cache data.");
-			}
-			return $this->_compressPrefix . $data;
-		}
-		return $data;
-	}
-
-	/**
-	 * @param bool|string $data
-	 * @return string
-	 */
-	protected function _decodeData($data)
-	{
-		if (substr($data, 2, 3) == self::COMPRESS_PREFIX) {
-			switch (substr($data, 0, 2)) {
-				case 'sn':
-					return snappy_uncompress(substr($data, 5));
-				case 'lz':
-					return lzf_decompress(substr($data, 5));
-				case 'gz':
-				case 'zc':
-					return gzuncompress(substr($data, 5));
-			}
-		}
-		return $data;
 	}
 }

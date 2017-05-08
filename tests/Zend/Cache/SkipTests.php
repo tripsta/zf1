@@ -176,7 +176,6 @@ class Zend_Cache_CouchbaseBackendTest_SkipTests extends Zend_Cache_BackendTest_S
 {
 }
 
-
 /**
  * @category   Zend
  * @package    Zend_Cache

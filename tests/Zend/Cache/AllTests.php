@@ -50,6 +50,7 @@ require_once 'Zend/Cache/ZendPlatformBackendTest.php';
 require_once 'Zend/Cache/ZendServerDiskTest.php';
 require_once 'Zend/Cache/ZendServerShMemTest.php';
 require_once 'Zend/Cache/CouchbaseBackendTest.php';
+require_once 'Zend/Cache/RedisClusterBackendTest.php';
 
 /**
  * @category   Zend
@@ -175,11 +176,11 @@ class Zend_Cache_AllTests
          */
         if (!defined('TESTS_ZEND_CACHE_REDISCLUSTER_ENABLED') ||
             constant('TESTS_ZEND_CACHE_REDISCLUSTER_ENABLED') === false) {
-            $skipTest = new Zend_Cache_RedisclusterBackendTest_SkipTests();
+            $skipTest = new Zend_Cache_RedisClusterBackendTest_SkipTests();
             $skipTest->message = 'Tests are not enabled in TestConfiguration.php';
             $suite->addTest($skipTest);
         } else if (!extension_loaded('redis')) {
-            $skipTest = new Zend_Cache_RedisclusterBackendTest_SkipTests();
+            $skipTest = new Zend_Cache_RedisClusterBackendTest_SkipTests();
             $skipTest->message = "Extension 'phpredis' is not loaded";
             $suite->addTest($skipTest);
         } else {
@@ -192,7 +193,7 @@ class Zend_Cache_AllTests
             if (!defined('TESTS_ZEND_CACHE_REDISCLUSTER_PERSISTENT')) {
                 define('TESTS_ZEND_CACHE_REDISCLUSTER_PERSISTENT', false);
             }
-            $suite->addTestSuite('Zend_Cache_RedisclusterBackendTest');
+            $suite->addTestSuite('Zend_Cache_RedisClusterBackendTest');
         }
 
         /*

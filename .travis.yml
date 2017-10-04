@@ -14,6 +14,7 @@ jobs:
   fast_finish: true
 
 env:
+  - TMPDIR=/tmp
   - DEFAULT_COMPOSER_FLAGS="--no-interaction --no-progress --no-suggest" USE_XDEBUG=false
 
 cache:
@@ -34,6 +35,11 @@ before_script:
   - mysql -e 'create database zftest;'
   - psql -c 'create database zftest;' -U postgres
 
+  - if [[ "$TRAVIS_PHP_VERSION" == "7.0" ]]; then phpenv config-add tests/php7_config.ini; fi
+
+  - echo "extension = memcache.so" >> ~/.phpenv/versions/$(phpenv version-name)/etc/php.ini
+  - echo "extension = memcached.so" >> ~/.phpenv/versions/$(phpenv version-name)/etc/php.ini
+  - echo "extension = couchbase.so" >> ~/.phpenv/versions/$(phpenv version-name)/etc/php.ini
   - cp ./tests/TestConfiguration.travis.php ./tests/TestConfiguration.php
 
 script:

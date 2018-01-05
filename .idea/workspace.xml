@@ -6,6 +6,7 @@
   <component name="ChangeListManager">
     <list default="true" id="23b9f80b-bb21-4c7b-82ba-b5ba59a84678" name="Default" comment="">
 <<<<<<< HEAD
+<<<<<<< HEAD
       <change beforePath="$PROJECT_DIR$/.travis.yml" beforeDir="false" afterPath="$PROJECT_DIR$/.travis.yml" afterDir="false" />
 =======
       <change afterPath="$PROJECT_DIR$/library/Zend/Cache/Backend/RedisCluster.php" afterDir="false" />
@@ -19,6 +20,9 @@
       <change beforePath="$PROJECT_DIR$/tests/Zend/Cache/RedisclusterBackendTest.php" beforeDir="false" />
       <change beforePath="$PROJECT_DIR$/tests/Zend/Cache/SkipTests.php" beforeDir="false" afterPath="$PROJECT_DIR$/tests/Zend/Cache/SkipTests.php" afterDir="false" />
 >>>>>>> a84d31bb3 (Refactor RedisCluster cache backend)
+=======
+      <change beforePath="$PROJECT_DIR$/.travis.yml" beforeDir="false" afterPath="$PROJECT_DIR$/.travis.yml" afterDir="false" />
+>>>>>>> 3ac3d49d5 ([#B-10312] - Added pcs to travis configuration)
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />

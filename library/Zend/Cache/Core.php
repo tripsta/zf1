@@ -181,11 +181,6 @@ class Zend_Cache_Core
             $directives[$directive] = $this->_options[$directive];
         }
         $this->_backend->setDirectives($directives);
-        if (in_array('Zend_Cache_Backend_ExtendedInterface', class_implements($this->_backend))) {
-            $this->_extendedBackend = true;
-            $this->_backendCapabilities = $this->_backend->getCapabilities();
-        }
-
     }
 
     /**
@@ -385,10 +380,11 @@ class Zend_Cache_Core
         if ($this->_options['ignore_user_abort']) {
             $abort = ignore_user_abort(true);
         }
+        $lifetime = $specificLifetime === false ? $this->_options['lifetime'] : $specificLifetime;
         if (($this->_extendedBackend) && ($this->_backendCapabilities['priority'])) {
-            $result = $this->_backend->save($data, $id, $tags, $specificLifetime, $priority);
+            $result = $this->_backend->save($data, $id, $tags, $lifetime, $priority);
         } else {
-            $result = $this->_backend->save($data, $id, $tags, $specificLifetime);
+            $result = $this->_backend->save($data, $id, $tags, $lifetime);
         }
         if ($this->_options['ignore_user_abort']) {
             ignore_user_abort($abort);

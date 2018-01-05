@@ -767,7 +767,10 @@ abstract class Zend_Translate_Adapter {
             // faster than creating a new locale and separate the leading part
             $locale = substr($locale, 0, -strlen(strrchr($locale, '_')));
 
-            if ((is_string($messageId) || is_int($messageId)) && isset($this->_translate[$locale][$messageId])) {
+            // faster than creating a new locale and separate the leading part
+            $regionlessLocale = substr($locale, 0, -strlen(strrchr($locale, '_')));
+
+            if ((is_string($messageId) || is_int($messageId)) && isset($this->_translate[$regionlessLocale][$messageId])) {
                 // return regionless translation (en_US -> en)
                 if ($plural === null) {
                     $this->_routed = [];
@@ -779,6 +782,17 @@ abstract class Zend_Translate_Adapter {
                     $this->_routed = [];
                     return $this->_translate[$locale][$plural[0]][$rule];
                 }
+
+                $rule = Zend_Translate_Plural::getPlural($number, $regionlessLocale);
+                if (isset($this->_translate[$regionlessLocale][$plural[0]][$rule])) {
+                    $this->_routed = array();
+                    return $this->_translate[$regionlessLocale][$plural[0]][$rule];
+                }
+
+				$rule = Zend_Translate_Plural::getPlural($number, $regionlessLocale);
+				if (isset($this->_translate[$regionlessLocale][$plural[0]][$rule])) {
+					return $this->_translate[$regionlessLocale][$plural[0]][$rule];
+				}
             }
         }
 

@@ -27,8 +27,15 @@
 =======
       <change beforePath="$PROJECT_DIR$/library/Zend/Controller/Router/Route.php" beforeDir="false" afterPath="$PROJECT_DIR$/library/Zend/Controller/Router/Route.php" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/library/Zend/Controller/Router/Route/Static.php" beforeDir="false" afterPath="$PROJECT_DIR$/library/Zend/Controller/Router/Route/Static.php" afterDir="false" />
+<<<<<<< HEAD
 >>>>>>> 11af296f4 ([#B-10312] Zend controller changes)
+=======
+      <change beforePath="$PROJECT_DIR$/.idea/zf1.iml" afterPath="$PROJECT_DIR$/.idea/zf1.iml" />
+      <change beforePath="$PROJECT_DIR$/tests/Zend/Cache/CouchbaseBackendTest.php" afterPath="$PROJECT_DIR$/tests/Zend/Cache/CouchbaseBackendTest.php" />
+>>>>>>> 3dbd333d4 ([#B-10312] Zend Version update)
     </list>
+    <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
+    <option name="TRACKING_ENABLED" value="true" />
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
@@ -143,7 +150,11 @@
     <detection-done>true</detection-done>
     <sorting>DEFINITION_ORDER</sorting>
   </component>
+<<<<<<< HEAD
   <component name="PhpWorkspaceProjectConfiguration">
+=======
+  <component name="PhpWorkspaceProjectConfiguration" backward_compatibility_performed="true">
+>>>>>>> 28f6a6fde ([#B-10312] Zend Version update)
     <include_path>
       <path value="$PROJECT_DIR$/vendor/symfony/yaml" />
       <path value="$PROJECT_DIR$/vendor/phpunit/dbunit" />
@@ -260,18 +271,44 @@
       <pane id="Scope" />
     </panes>
   </component>
+<<<<<<< HEAD
   <component name="PropertiesComponent">{
   &quot;keyToString&quot;: {
     &quot;git-widget-placeholder&quot;: &quot;Rebasing tripsta-latest&quot;,
     &quot;node.js.selected.package.tslint&quot;: &quot;(autodetect)&quot;
   }
 }</component>
+=======
+  <component name="PropertiesComponent">
+    <property name="settings.editor.selected.configurable" value="Errors" />
+    <property name="WebServerToolWindowFactoryState" value="false" />
+    <property name="SearchEverywhereHistoryKey" value="TP24_Cache_Backend_CouchbaseBackendTest&#9;null&#9;null&#10;Libme&#9;null&#9;null&#10;Couchbase.php&#9;FILE&#9;file:///home/vkatsoudas/projects/orange/zf1/library/Zend/Cache/Backend/Couchbase.php&#10;Couch&#9;FILE&#9;jar:///home/vkatsoudas/.local/share/JetBrains/Toolbox/apps/PhpStorm/ch-0/172.4155.41/plugins/php/lib/php.jar!/stubs/couchbase/couchbase.php&#10;ar_sa&#9;FILE&#9;file:///home/vkatsoudas/projects/orange/zf1/library/Zend/Locale/Data/ar_SA.xml" />
+  </component>
+>>>>>>> 28f6a6fde ([#B-10312] Zend Version update)
   <component name="RecentsManager">
     <key name="CopyFile.RECENT_KEYS">
       <recent name="$PROJECT_DIR$/library/Zend/Cache/Backend" />
       <recent name="$PROJECT_DIR$/library/Zend" />
     </key>
   </component>
+<<<<<<< HEAD
+=======
+  <component name="RunDashboard">
+    <option name="ruleStates">
+      <list>
+        <RuleState>
+          <option name="name" value="ConfigurationTypeDashboardGroupingRule" />
+        </RuleState>
+        <RuleState>
+          <option name="name" value="StatusDashboardGroupingRule" />
+        </RuleState>
+      </list>
+    </option>
+  </component>
+  <component name="ShelveChangesManager" show_recycled="false">
+    <option name="remove_strategy" value="false" />
+  </component>
+>>>>>>> 28f6a6fde ([#B-10312] Zend Version update)
   <component name="SvnConfiguration">
     <configuration />
   </component>
@@ -320,6 +357,19 @@
       <window_info id="Ant Build" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.25" sideWeight="0.5" order="1" side_tool="false" content_ui="tabs" />
     </layout>
   </component>
+<<<<<<< HEAD
+=======
+  <component name="TypeScriptGeneratedFilesManager">
+    <option name="version" value="1" />
+  </component>
+  <component name="VcsContentAnnotationSettings">
+    <option name="myLimit" value="2678400000" />
+  </component>
+  <component name="XDebuggerManager">
+    <breakpoint-manager />
+    <watches-manager />
+  </component>
+>>>>>>> 28f6a6fde ([#B-10312] Zend Version update)
   <component name="editorHistoryManager">
     <entry file="file://$PROJECT_DIR$/library/Zend/Locale/Data/en_HK.xml">
       <provider selected="true" editor-type-id="text-editor">

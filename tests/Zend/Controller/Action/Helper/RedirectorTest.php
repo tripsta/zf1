@@ -551,7 +551,29 @@ class Zend_Controller_Action_Helper_RedirectorTest extends PHPUnit_Framework_Tes
 
         $this->redirector->gotoSimple('babar', 'barbapapa', 'barbazoo', array('asd' => 1));
         $result = $this->redirector->getRedirectUrl();
-        $expected = '/barbazoo/barbapapa/babar/asd/1';
+        $expected = '/barbazoo/barbapapa/babar/asd/1?asd=1';
+        $this->assertEquals($expected, $result);
+    }
+
+    /** @group ZF-6025 */
+    public function testGotoSimpleShouldNotHardcodeControllerActionModuleKeysWhenDelimiterNotExists()
+    {
+        $this->request->setControllerKey('foo')
+                      ->setActionKey('bar')
+                      ->setModuleKey('baz');
+
+        $this->router->removeRoute('default');
+        $this->router->addRoute('default', new Zend_Controller_Router_Route(
+            ':baz/:foo/:bar/', array(
+                'baz' => 'default',
+                'foo' => 'index',
+                'bar' => 'index'
+            )
+        ));
+
+        $this->redirector->gotoSimple('babar', 'barbapapa', 'barbazoo', array('asd' => 1));
+        $result = $this->redirector->getRedirectUrl();
+        $expected = '/barbazoo/barbapapa/babar?asd=1';
         $this->assertEquals($expected, $result);
     }
 

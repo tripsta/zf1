@@ -235,7 +235,7 @@ class Zend_Controller_Router_Route_ChainTest extends PHPUnit_Framework_TestCase
 
         $path = $chain->assemble(array());
 
-        $this->assertEquals('foo/', $path);
+        $this->assertEquals('foo/?', $path);
     }
 
     public function testVariableUnsettingRoute()

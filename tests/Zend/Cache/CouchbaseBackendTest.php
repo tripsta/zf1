@@ -19,7 +19,7 @@ class Zend_Cache_Backend_CouchbaseBackendTest extends Zend_Cache_CommonExtendedB
 	 */
 	protected $_backend;
 
-	function setUp()
+	function setUp($notag = false)
 	{
 		parent::setUp();
 		$this->_backend = new Zend_Cache_Backend_Couchbase();

@@ -731,7 +731,7 @@ class Zend_Controller_Router_RewriteTest extends TestCase
 
         $url = $this->_router->assemble([], 'article-id');
 
-        $this->assertEquals('/articles/777', $url);
+        $this->assertEquals('/articles/777?baz=2&module=default', $url);
     }
 
 
@@ -760,11 +760,38 @@ class Zend_Controller_Router_RewriteTest extends TestCase
         ];
 
         $this->assertEquals(
-            '/index/index/2/foo/page/bar',
+            '/index/index/2/foo/page/bar?2=foo&page=bar',
             $this->_router->assemble($params)
         );
     }
-    
+
+    /**
+     * Test that it is possible to generate a URL with a numerical key
+     *
+     * @since  2010-06-11
+     * @group  ZF-8914
+     * @covers Zend_Controller_Router_Rewrite::assemble
+     */
+    public function testCanGenerateNumericKeyUriWithoutDelimiter()
+    {
+        $this->_router->addRoute(
+            'default',
+            new Zend_Controller_Router_Route(
+                ':controller/:action/',
+                array('controller' => 'index', 'action' => 'index')
+            )
+        );
+
+        $params = [
+            'controller' => 'index',
+            'action'     => 'index',
+            '2'          => 'foo',
+            'page'       => 'bar',
+        ];
+
+        $this->assertEquals('/?2=foo&page=bar', $this->_router->assemble($params));
+    }
+
     /**
      * @group ZF-11393
      */

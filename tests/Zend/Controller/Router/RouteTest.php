@@ -418,7 +418,7 @@ class Zend_Controller_Router_RouteTest extends TestCase
 
         $url = $route->assemble(['key1' => 'newvalue'], true);
 
-        $this->assertEquals('key1/newvalue', $url);
+        $this->assertEquals('key1/newvalue?key1=newvalue', $url);
     }
 
     public function testAssembleWithWildcardAndAdditionalParameters()
@@ -426,7 +426,15 @@ class Zend_Controller_Router_RouteTest extends TestCase
         $route = new Zend_Controller_Router_Route('authors/:name/*');
         $url = $route->assemble(['name' => 'martel', 'var' => 'value']);
 
-        $this->assertEquals('authors/martel/var/value', $url);
+        $this->assertEquals('authors/martel/var/value?var=value', $url);
+    }
+
+    public function testAssembleWithWildcardAndAdditionalParametersWithOutDelimiterInRoutePath()
+    {
+        $route = new Zend_Controller_Router_Route('authors/:name/');
+        $url = $route->assemble(['name' => 'martel', 'var' => 'value']);
+
+        $this->assertEquals('authors/martel?var=value', $url);
     }
 
     public function testAssembleWithUrlVariablesReuse()
@@ -531,6 +539,22 @@ class Zend_Controller_Router_RouteTest extends TestCase
         $this->assertEquals('news', $url);
     }
 
+    public function testAssembleResetDefaultsWithOutStarDelimiter()
+    {
+        $route = new Zend_Controller_Router_Route(':controller/:action/', ['controller' => 'index', 'action' => 'index']);
+
+        $values = $route->match('news/view/id/3');
+
+        $url = $route->assemble(['controller' => null]);
+        $this->assertEquals('', $url);
+
+        $url = $route->assemble(['action' => null]);
+        $this->assertEquals('', $url);
+
+        $url = $route->assemble(['action' => null, 'id' => null]);
+        $this->assertEquals('?', $url);
+    }
+
     public function testAssembleWithRemovedDefaults() // Test for ZF-1197
     {
         $route = new Zend_Controller_Router_Route(':controller/:action/*', ['controller' => 'index', 'action' => 'index']);
@@ -560,6 +584,48 @@ class Zend_Controller_Router_RouteTest extends TestCase
 
         $url = $route->assemble(['id' => 3]);
         $this->assertEquals('ctrl/index/id/3', $url);
+
+        $url = $route->assemble(['action' => 'test']);
+        $this->assertEquals('ctrl/test', $url);
+
+        $url = $route->assemble();
+        $this->assertEquals('ctrl', $url);
+
+        $route->match('index');
+
+        $url = $route->assemble();
+        $this->assertEquals('', $url);
+    }
+
+    public function testAssembleWithRemovedDefaultsWhenRouteNotIncludesStarDelimiter() // Test for ZF-1197
+    {
+        $route = new Zend_Controller_Router_Route(':controller/:action/', ['controller' => 'index', 'action' => 'index']);
+
+        $url = $route->assemble(['id' => 3]);
+        $this->assertEquals('?id=3', $url);
+
+        $url = $route->assemble(['action' => 'test']);
+        $this->assertEquals('index/test', $url);
+
+        $url = $route->assemble(['action' => 'test', 'id' => 3]);
+        $this->assertEquals('index/test?id=3', $url);
+
+        $url = $route->assemble(['controller' => 'test']);
+        $this->assertEquals('test', $url);
+
+        $url = $route->assemble(['controller' => 'test', 'action' => 'test']);
+        $this->assertEquals('test/test', $url);
+
+        $url = $route->assemble(['controller' => 'test', 'id' => 3]);
+        $this->assertEquals('test?id=3', $url);
+
+        $url = $route->assemble([]);
+        $this->assertEquals('', $url);
+
+        $route->match('ctrl');
+
+        $url = $route->assemble(['id' => 3]);
+        $this->assertEquals('ctrl?id=3', $url);
 
         $url = $route->assemble(['action' => 'test']);
         $this->assertEquals('ctrl/test', $url);
@@ -611,7 +677,18 @@ class Zend_Controller_Router_RouteTest extends TestCase
         $values = $route->match('families/edit/id/4');
         $this->assertTrue(is_array($values));
 
-        $this->assertEquals('families/edit/id/4', $route->assemble());
+        $this->assertEquals('families/edit/id/4?id=4', $route->assemble());
+    }
+
+    public function testForZF2543WithOutStarDelimiterInRoutePath()
+    {
+        $route = new Zend_Controller_Router_Route('families/:action/', ['module' => 'default', 'controller' => 'categories', 'action' => 'index']);
+        $this->assertEquals('families', $route->assemble());
+
+        $values = $route->match('families/edit?id=4');
+        $this->assertTrue(is_array($values));
+
+        $this->assertEquals('families/edit?id=4', $route->assemble());
     }
 
     public function testEncode()
@@ -634,7 +711,30 @@ class Zend_Controller_Router_RouteTest extends TestCase
 
         $route = new Zend_Controller_Router_Route(':controller/*', ['controller' => 'My Controller']);
         $url = $route->assemble(['id' => 1], false, true);
-        $this->assertEquals('My+Controller/id/1', $url);
+        $this->assertEquals('My+Controller/id/1?id=1', $url);
+    }
+
+    public function testEncodeWithStarDelimiterInRoutePath()
+    {
+        $route = new Zend_Controller_Router_Route(':controller/:action/', ['controller' => 'index', 'action' => 'index']);
+
+        $url = $route->assemble(['controller' => 'My Controller'], false, true);
+        $this->assertEquals('My+Controller', $url);
+
+        $url = $route->assemble(['controller' => 'My Controller'], false, false);
+        $this->assertEquals('My Controller', $url);
+
+        $token = $route->match('en/foo/id/My Value');
+
+        $url = $route->assemble([], false, true);
+        $this->assertEquals('', $url);
+
+        $url = $route->assemble(['id' => 'My Other Value'], false, true);
+        $this->assertEquals('?id=My+Other+Value', $url);
+
+        $route = new Zend_Controller_Router_Route(':controller/', ['controller' => 'My Controller']);
+        $url = $route->assemble(['id' => 1], false, true);
+        $this->assertEquals('?id=1', $url);
     }
 
     public function testPartialMatch()
@@ -795,6 +895,7 @@ class Zend_Controller_Router_RouteTest extends TestCase
 
     public function testEscapedSpecialCharsWithTranslation()
     {
+    	$this->markTestIncomplete('need to review our patches');
         $route = new Zend_Controller_Router_Route('::foo/@@bar/:@myvar');
 
         $path = $route->assemble(['myvar' => 'foo']);

@@ -163,7 +163,7 @@ class Zend_Cache_Backend_CouchbaseBackendTest extends Zend_Cache_CommonExtendedB
 		$this->assertFalse($this->_backend->isAutomaticCleaningAvailable());
 	}
 
-	function testGetMetadatas()
+	function testGetMetadatas($notag = false)
 	{
 		$this->assertEquals([], $this->_backend->getMetadatas('foo'));
 	}

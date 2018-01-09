@@ -41,14 +41,16 @@ abstract class Zend_Cache
      * @var array
      */
     public static $standardBackends = ['File', 'Sqlite', 'Memcached', 'Libmemcached', 'Apc', 'ZendPlatform',
-                                            'Xcache', 'TwoLevels', 'WinCache', 'ZendServer_Disk', 'ZendServer_ShMem', 'Rediscluster', 'Redis', 'Couchbase'];
+                                            'Xcache', 'TwoLevels', 'WinCache', 'ZendServer_Disk', 'ZendServer_ShMem',
+                                             'Rediscluster', 'Redis', 'Couchbase'];
 
     /**
      * Standard backends which implement the ExtendedInterface
      *
      * @var array
      */
-    public static $standardExtendedBackends = ['File', 'Apc', 'TwoLevels', 'Memcached', 'Libmemcached', 'Sqlite', 'WinCache', 'Rediscluster', 'Redis', 'Couchbase'];
+    public static $standardExtendedBackends = ['File', 'Apc', 'TwoLevels', 'Memcached', 'Libmemcached', 'Sqlite',
+												'WinCache', 'Rediscluster', 'Redis', 'Couchbase'];
 
     /**
      * Only for backward compatibility (may be removed in next major release)

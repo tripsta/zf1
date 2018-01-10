@@ -4443,11 +4443,11 @@ class Zend_DateTest extends PHPUnit_Framework_TestCase
 
         //Saturday [ar_EG]
         // The right value for AM/PM has to be set in arabic letters
-        $this->assertSame('08‏/01‏/1970 5:00:00 ص', $date->getWeek('ar_EG')->toString());
+        $this->assertSame('8 Jan 1970 05:00:00', $date->getWeek('ar_EG')->toString());
         $date->setTimeZone('UTC');
-        $this->assertSame('08‏/01‏/1970 12:00:00 ص', $date->getWeek('ar_EG')->toString());
+        $this->assertSame('8 Jan 1970 00:00:00', $date->getWeek('ar_EG')->toString());
         $date->setTimeZone('Indian/Maldives');
-        $this->assertSame('08‏/01‏/1970 5:00:00 ص', $date->getWeek('ar_EG')->toString());
+        $this->assertSame('8 Jan 1970 05:00:00', $date->getWeek('ar_EG')->toString());
 
         //Sunday [start of a new week as defined per ISO 8601]
         $date->addDay(1);

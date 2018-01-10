@@ -100,13 +100,6 @@ class Zend_Cache_Core
     protected static $_directivesList = ['lifetime', 'logging', 'logger'];
 
     /**
-     * Array of options which have to be transfered to backend
-     *
-     * @var array $_directivesList
-     */
-    protected static $_directivesList = array('lifetime', 'logging', 'logger');
-
-    /**
      * Not used for the core, just a sort a hint to get a common setOption() method (for the core and for frontends)
      *
      * @var array $_specificOptions

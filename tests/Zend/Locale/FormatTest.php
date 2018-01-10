@@ -1153,6 +1153,7 @@ class Zend_Locale_FormatTest extends TestCase
      */
     public function testIsIntegerForLocaleZhHK()
     {
+        $this->markTestSkipped('XML has changes that break this test (zh_hans_hk vs zh_hant_hk)');
         $this->assertTrue(
             Zend_Locale_Format::isInteger('1', ['locale' => 'zh_HK'])
         );

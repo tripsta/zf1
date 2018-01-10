@@ -723,6 +723,7 @@ class Zend_Locale
         'tr'          => true,
         'tr_CY'       => true,
         'tr_TR'       => true,
+        'tp'          => true,
         'ts'          => true,
         'ts_ZA'       => true,
         'twq'         => true,

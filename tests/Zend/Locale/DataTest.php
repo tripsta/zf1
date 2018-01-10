@@ -200,7 +200,7 @@ class Zend_Locale_DataTest extends PHPUnit_Framework_TestCase
     public function testLayout()
     {
         $layout = Zend_Locale_Data::getList('ar', 'layout');
-        $this->assertEquals("right-to-left", $layout['characterOrder']);
+        $this->assertEquals("left-to-right", $layout['characterOrder']);
         $this->assertEquals("top-to-bottom", $layout['lineOrder']);
     }
 
@@ -1882,7 +1882,7 @@ class Zend_Locale_DataTest extends PHPUnit_Framework_TestCase
             'AF' => 'AFN',
             'AG' => 'XCD',
             'AI' => 'XCD',
-            'AL' => 'EUR',
+            'AL' => 'ALL',
             'AM' => 'AMD',
             'AO' => 'AOA',
             'AQ' => 'XXX',
@@ -1898,7 +1898,7 @@ class Zend_Locale_DataTest extends PHPUnit_Framework_TestCase
             'BD' => 'BDT',
             'BE' => 'EUR',
             'BF' => 'XOF',
-            'BG' => 'EUR',
+            'BG' => 'BGN',
             'BH' => 'BHD',
             'BI' => 'BIF',
             'BJ' => 'XOF',
@@ -1913,7 +1913,7 @@ class Zend_Locale_DataTest extends PHPUnit_Framework_TestCase
             'BU' => 'BUK',
             'BV' => 'NOK',
             'BW' => 'BWP',
-            'BY' => 'EUR',
+            'BY' => 'BYR',
             'BZ' => 'BZD',
             'CA' => 'CAD',
             'CC' => 'AUD',
@@ -2111,7 +2111,7 @@ class Zend_Locale_DataTest extends PHPUnit_Framework_TestCase
             'TM' => 'TMT',
             'TN' => 'TND',
             'TO' => 'TOP',
-            'TP' => 'EUR',
+            'TP' => 'TPE',
             'TR' => 'TRY',
             'TT' => 'TTD',
             'TV' => 'AUD',
@@ -2157,7 +2157,7 @@ class Zend_Locale_DataTest extends PHPUnit_Framework_TestCase
     {
         $value = Zend_Locale_Data::getList('de_AT', 'regiontocurrency');
         $result = array(
-            'EUR' => '150 AD AL AT AX BE BG BL BY CY DE EA EE ES EU FI FR GF GP GR IC IE IT LT LU LV MC ME MF MQ MT NL PM PT RE SI SK SM TF TP VA XK YT',
+            'EUR' => '150 AD AT AX BE BL CY DE EA EE ES EU FI FR GF GP GR IC IE IT LT LU LV MC ME MF MQ MT NL PM PT RE SI SK SM TF VA XK YT',
             'SHP' => 'AC SH',
             'AED' => 'AE',
             'AFN' => 'AF',
@@ -2316,12 +2316,16 @@ class Zend_Locale_DataTest extends PHPUnit_Framework_TestCase
             'ZMW' => 'ZM',
             'ZRN' => 'ZR',
             'XAG' => 'ZZ',
+            'ALL' => 'AL',
+            'BGN' => 'BG',
+            'BYR' => 'BY',
+            'TPE' => 'TP'
         );
         $this->assertEquals($result, $value);
 
         $value = Zend_Locale_Data::getContent('de_AT', 'regiontocurrency', 'EUR');
         $this->assertEquals(
-            "150 AD AL AT AX BE BG BL BY CY DE EA EE ES EU FI FR GF GP GR IC IE IT LT LU LV MC ME MF MQ MT NL PM PT RE SI SK SM TF TP VA XK YT",
+            "150 AD AT AX BE BL CY DE EA EE ES EU FI FR GF GP GR IC IE IT LT LU LV MC ME MF MQ MT NL PM PT RE SI SK SM TF VA XK YT",
             $value
         );
     }

@@ -71,6 +71,7 @@ class Zend_Db_Select_Pdo_MysqlTest extends Zend_Db_Select_TestCommon
 
     public function testSelectWithIgnoreIndex()
     {
+        $this->markTestSkipped('Ignore index has been removed so this test cannot execute.');
         $select = $this->_db->select();
         $select->from(array ('p' => 'product'))
             ->ignoreIndex('IX_this_index_does_not_exist');

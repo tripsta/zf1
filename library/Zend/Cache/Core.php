@@ -93,6 +93,13 @@ class Zend_Cache_Core
     );
 
     /**
+     * Array of options which have to be transfered to backend
+     *
+     * @var array $_directivesList
+     */
+    protected static $_directivesList = array('lifetime', 'logging', 'logger');
+
+    /**
      * Not used for the core, just a sort a hint to get a common setOption() method (for the core and for frontends)
      *
      * @var array $_specificOptions
@@ -134,7 +141,7 @@ class Zend_Cache_Core
         }
         if (!is_array($options)) {
             Zend_Cache::throwException("Options passed were not an array"
-            . " or Zend_Config instance.");
+                . " or Zend_Config instance.");
         }
         while (list($name, $value) = each($options)) {
             $this->setOption($name, $value);
@@ -167,6 +174,13 @@ class Zend_Cache_Core
     public function setBackend(Zend_Cache_Backend $backendObject)
     {
         $this->_backend= $backendObject;
+        // some options (listed in $_directivesList) have to be given
+        // to the backend too (even if they are not "backend specific")
+        $directives = array();
+        foreach (Zend_Cache_Core::$_directivesList as $directive) {
+            $directives[$directive] = $this->_options[$directive];
+        }
+        $this->_backend->setDirectives($directives);
         if (in_array('Zend_Cache_Backend_ExtendedInterface', class_implements($this->_backend))) {
             $this->_extendedBackend = true;
             $this->_backendCapabilities = $this->_backend->getCapabilities();
@@ -266,6 +280,9 @@ class Zend_Cache_Core
     public function setLifetime($newLifetime)
     {
         $this->_options['lifetime'] = $newLifetime;
+        $this->_backend->setDirectives(array(
+            'lifetime' => $newLifetime
+        ));
     }
 
     /**
@@ -438,10 +455,10 @@ class Zend_Cache_Core
             return true;
         }
         if (!in_array($mode, array(Zend_Cache::CLEANING_MODE_ALL,
-                                   Zend_Cache::CLEANING_MODE_OLD,
-                                   Zend_Cache::CLEANING_MODE_MATCHING_TAG,
-                                   Zend_Cache::CLEANING_MODE_NOT_MATCHING_TAG,
-                                   Zend_Cache::CLEANING_MODE_MATCHING_ANY_TAG))) {
+            Zend_Cache::CLEANING_MODE_OLD,
+            Zend_Cache::CLEANING_MODE_MATCHING_TAG,
+            Zend_Cache::CLEANING_MODE_NOT_MATCHING_TAG,
+            Zend_Cache::CLEANING_MODE_MATCHING_ANY_TAG))) {
             Zend_Cache::throwException('Invalid cleaning mode');
         }
         self::_validateTagsArray($tags);

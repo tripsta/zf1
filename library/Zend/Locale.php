@@ -280,6 +280,7 @@ class Zend_Locale
         'en_TO'       => true,
         'en_TT'       => true,
         'en_TV'       => true,
+		'en_TP'       => true,
         'en_TZ'       => true,
         'en_UG'       => true,
         'en_UM'       => true,
@@ -720,6 +721,7 @@ class Zend_Locale
         'tn_ZA'       => true,
         'to'          => true,
         'to_TO'       => true,
+        'tp'          => true,
         'tr'          => true,
         'tr_CY'       => true,
         'tr_TR'       => true,
@@ -783,7 +785,7 @@ class Zend_Locale
         'zh_Hant_HK'  => true,
         'zh_Hant_MO'  => true,
         'zh_Hant_TW'  => true,
-        'zu'          => true, 'en_TP' => true,
+        'zu'          => true,
         'zu_ZA'       => true,
     );
 
@@ -1015,6 +1017,7 @@ class Zend_Locale
         'TN' => 'ar_TN',
         'TO' => 'to_TO',
         'TR' => 'tr_TR',
+		'TP' => 'en_TP',
         'TT' => 'en_TT',
         'TV' => 'tvl_TV',
         'TW' => 'zh_Hant_TW',
@@ -1038,8 +1041,7 @@ class Zend_Locale
         'YT' => 'swb_YT',
         'ZA' => 'en_ZA',
         'ZM' => 'en_ZM',
-        'ZW' => 'sn_ZW',
-		'TP' => 'en_TP'
+        'ZW' => 'sn_ZW'
     );
 
     /**

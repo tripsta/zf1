@@ -139,6 +139,11 @@ class Zend_Cache_CoreTest extends TestCase
     {
         $backend = new Zend_Cache_Backend_Test([]);
         $this->_instance->setBackend($backend);
+        $this->_instance-> getBackend()->setDirectives(array(
+            'lifetime' => 3600,
+            'logging'  => false,
+            'logger'   => null
+        ));
         $log = $backend->getLastLog();
         $this->assertEquals('setDirectives', $log['methodName']);
         $this->assertTrue(is_array($log['args'][0]));

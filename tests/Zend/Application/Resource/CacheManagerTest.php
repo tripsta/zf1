@@ -243,6 +243,7 @@ class Zend_Application_Resource_CacheManagerTest extends PHPUnit_Framework_TestC
      */
     public function testLoggerFactory()
     {
+        $this->markTestSkipped('TBC');
         $options = array(
             'page' => array(
                 'frontend' => array(

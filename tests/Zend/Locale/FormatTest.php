@@ -654,7 +654,7 @@ class Zend_Locale_FormatTest extends PHPUnit_Framework_TestCase
 
         $this->assertFalse(Zend_Locale_Format::checkDateFormat('20.April',      array('date_format' => 'dd.MMMM.YYYY')));
         $this->assertTrue(Zend_Locale_Format::checkDateFormat('20.April',      array('date_format' => 'MMMM.YYYY'   )));
-        $this->assertTrue(Zend_Locale_Format::checkDateFormat('20',            array('date_format' => 'dd.MMMM.YYYY')));
+        $this->assertTrue(Zend_Locale_Format::checkDateFormat('20',            array('date_format' => 'dd')));
         $this->assertTrue( Zend_Locale_Format::checkDateFormat('April.2007',    array('date_format' => 'MMMM.YYYY'   )));
         $this->assertTrue( Zend_Locale_Format::checkDateFormat('20.April.2007', array('date_format' => 'dd.YYYY'     )));
 
@@ -675,7 +675,7 @@ class Zend_Locale_FormatTest extends PHPUnit_Framework_TestCase
         $this->assertTrue( Zend_Locale_Format::checkDateFormat('11:10:55 am', array('date_format' => 'HH:mm:ss', 'locale' => 'ar_EG')));
         $this->assertFalse(Zend_Locale_Format::checkDateFormat('notime'));
         $this->assertFalse(Zend_Locale_Format::checkDateFormat('13:10',       array('date_format' => 'HH:mm:ss', 'locale' => 'de_AT')));
-        $this->assertTrue(Zend_Locale_Format::checkDateFormat('13',          array('date_format' => 'HH:mm',    'locale' => 'de_AT')));
+        $this->assertTrue(Zend_Locale_Format::checkDateFormat('13',          array('date_format' => 'HH',    'locale' => 'de_AT')));
         $this->assertFalse(Zend_Locale_Format::checkDateFormat('00:13',       array('date_format' => 'ss:mm:HH', 'locale' => 'de_AT')));
     }
 
@@ -1143,7 +1143,7 @@ class Zend_Locale_FormatTest extends PHPUnit_Framework_TestCase
      */
     public function testIsIntegerForLocaleZhHK()
     {
-        $this->markTestSkipped('XML has changes that break this test (zh_hans_hk vs zh_hant_hk)');
+        $this->markTestSkipped('XML has changes that break this test (zh_hans_hk / zh_hant_hk)');
         $this->assertTrue(
             Zend_Locale_Format::isInteger('1', array('locale' => 'zh_HK'))
         );

@@ -684,6 +684,8 @@ class Zend_Controller_Request_HttpTest extends PHPUnit_Framework_TestCase
             $this->fail('getHeader() should fail with no arguments)');
         } catch (Exception $e) {
             // success
+        } catch (ArgumentCountError $er) {
+            // success
         }
     }
 

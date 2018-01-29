@@ -158,8 +158,8 @@ class Zend_Measure_NumberTest extends PHPUnit_Framework_TestCase
         $this->assertEquals(Zend_Measure_Number::HEXADECIMAL, $value->getType(), 'Zend_Measure_Number type expected');
 
         $value = new Zend_Measure_Number('MCXVII',Zend_Measure_Number::ROMAN,'de');
-        $value->setType(Zend_Measure_Number::HEXADECIMAL);
-        $this->assertEquals(Zend_Measure_Number::HEXADECIMAL, $value->getType(), 'Zend_Measure_Number type expected');
+        $value->setType(Zend_Measure_Number::ROMAN);
+        $this->assertEquals(Zend_Measure_Number::ROMAN, $value->getType(), 'Zend_Measure_Number type expected');
 
         $value = new Zend_Measure_Number('102122',Zend_Measure_Number::TERNARY,'de');
         $value->setType(Zend_Measure_Number::OCTAL);

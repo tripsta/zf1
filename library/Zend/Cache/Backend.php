@@ -200,7 +200,7 @@ class Zend_Cache_Backend
             }
         }
         // Attemp to detect by creating a temporary file
-        $tempFile = tempnam(md5(uniqid(rand(), TRUE)), '');
+        $tempFile = @tempnam(md5(uniqid(rand(), TRUE)), '');
         if ($tempFile) {
             $dir = realpath(dirname($tempFile));
             unlink($tempFile);

@@ -350,7 +350,7 @@ class Zend_Validate_File_Size extends Zend_Validate_Abstract
         $type  = trim(substr($size, -2, 1));
 
         $value = substr($size, 0, -1);
-        if (!is_numeric($value)) {
+        while (!is_numeric($value) && strlen($value) > 1) {
             $value = substr($value, 0, -1);
         }
 

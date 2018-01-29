@@ -456,6 +456,7 @@ class Zend_Validate_EmailAddress extends Zend_Validate_Abstract
             $hostname = idn_to_ascii($this->_hostname);
         }
 
+		$hostname = idn_to_utf8($hostname);
         $result = getmxrr($hostname, $mxHosts);
         if (!$result) {
             $this->_error(self::INVALID_MX_RECORD);

@@ -109,6 +109,11 @@ class Zend_Locale_Math_PhpMath extends Zend_Locale_Math
         $op1 = self::normalize($op1);
         $op2 = self::normalize($op2);
 
+		if (!is_numeric($op1) || !is_numeric($op2)) {
+			require_once 'Zend/Locale/Math/Exception.php';
+			throw new Zend_Locale_Math_Exception("properties not all numbers: $op1 ^ $op2");
+		}
+
         // BCMath extension doesn't use decimal part of the power
         // Provide the same behavior
         $op2 = ($op2 > 0) ? floor($op2) : ceil($op2);

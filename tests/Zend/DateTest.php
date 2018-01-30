@@ -448,9 +448,11 @@ class Zend_DateTest extends PHPUnit_Framework_TestCase
         $this->assertSame(             '30', $date->toString(    "s"));
         $this->assertSame(              '0', $date->toString(    "S"));
         $this->assertSame('Indian/Maldives', $date->toString( "zzzz"));
-        $this->assertSame(            'MVT', $date->toString(  "zzz"));
-        $this->assertSame(            'MVT', $date->toString(   "zz"));
-        $this->assertSame(            'MVT', $date->toString(    "z"));
+		// You cannot get the timezone abbreviation on PHP >= 7.1.4
+		// https://3v4l.org/aAC7L#v510
+        // $this->assertSame(            'MVT', $date->toString(  "zzz"));
+		// $this->assertSame(            'MVT', $date->toString(   "zz"));
+		// $this->assertSame(            'MVT', $date->toString(    "z"));
         $this->assertSame(         '+05:00', $date->toString( "ZZZZ"));
         $this->assertSame(          '+0500', $date->toString(  "ZZZ"));
         $this->assertSame(          '+0500', $date->toString(   "ZZ"));
@@ -584,7 +586,9 @@ class Zend_DateTest extends PHPUnit_Framework_TestCase
         $this->assertSame(         0, $date->toValue(Zend_Date::DAYLIGHT         ));
         $this->assertSame(       500, $date->toValue(Zend_Date::GMT_DIFF         ));
         $this->assertFalse(           $date->toValue(Zend_Date::GMT_DIFF_SEP     ));
-        $this->assertFalse(           $date->toValue(Zend_Date::TIMEZONE         ));
+		// You cannot get the timezone abbreviation on PHP >= 7.1.4
+		// https://3v4l.org/aAC7L#v510
+        // $this->assertFalse(           $date->toValue(Zend_Date::TIMEZONE         ));
         $this->assertSame(     18000, $date->toValue(Zend_Date::TIMEZONE_SECS    ));
         $this->assertFalse(           $date->toValue(Zend_Date::ISO_8601         ));
         $this->assertFalse(           $date->toValue(Zend_Date::RFC_2822         ));
@@ -803,7 +807,9 @@ class Zend_DateTest extends PHPUnit_Framework_TestCase
         $this->assertSame(                                           '0', $date->get(Zend_Date::DAYLIGHT         ));
         $this->assertSame(                                       '+0500', $date->get(Zend_Date::GMT_DIFF         ));
         $this->assertSame(                                      '+05:00', $date->get(Zend_Date::GMT_DIFF_SEP     ));
-        $this->assertSame(                                         'MVT', $date->get(Zend_Date::TIMEZONE         ));
+		// You cannot get the timezone abbreviation on PHP >= 7.1.4
+		// https://3v4l.org/aAC7L#v510
+        // $this->assertSame(                                         'MVT', $date->get(Zend_Date::TIMEZONE         ));
         $this->assertSame(                                       '18000', $date->get(Zend_Date::TIMEZONE_SECS    ));
         $this->assertSame(                   '2009-02-14T04:31:30+05:00', $date->get(Zend_Date::ISO_8601         ));
         $this->assertSame(             'Sat, 14 Feb 2009 04:31:30 +0500', $date->get(Zend_Date::RFC_2822         ));
@@ -817,12 +823,16 @@ class Zend_DateTest extends PHPUnit_Framework_TestCase
         $this->assertSame(                                  '14.02.2009', $date->get(Zend_Date::DATE_SHORT       ));
         $this->assertSame(                                    '04:31:30', $date->get(Zend_Date::TIMES            ));
         $this->assertSame(                    '04:31:30 Indian/Maldives', $date->get(Zend_Date::TIME_FULL        ));
-        $this->assertSame(                                '04:31:30 MVT', $date->get(Zend_Date::TIME_LONG        ));
+		// You cannot get the timezone abbreviation on PHP >= 7.1.4
+		// https://3v4l.org/aAC7L#v510
+        // $this->assertSame(                                '04:31:30 MVT', $date->get(Zend_Date::TIME_LONG        ));
         $this->assertSame(                                    '04:31:30', $date->get(Zend_Date::TIME_MEDIUM      ));
         $this->assertSame(                                       '04:31', $date->get(Zend_Date::TIME_SHORT       ));
         $this->assertSame(                         '14.02.2009 04:31:30', $date->get(Zend_Date::DATETIME         ));
         $this->assertSame('Samstag, 14. Februar 2009 04:31:30 Indian/Maldives', $date->get(Zend_Date::DATETIME_FULL    ));
-        $this->assertSame(               '14. Februar 2009 04:31:30 MVT', $date->get(Zend_Date::DATETIME_LONG    ));
+		// You cannot get the timezone abbreviation on PHP >= 7.1.4
+		// https://3v4l.org/aAC7L#v510
+        // $this->assertSame(               '14. Februar 2009 04:31:30 MVT', $date->get(Zend_Date::DATETIME_LONG    ));
         $this->assertSame(                         '14.02.2009 04:31:30', $date->get(Zend_Date::DATETIME_MEDIUM  ));
         $this->assertSame(                            '14.02.2009 04:31', $date->get(Zend_Date::DATETIME_SHORT   ));
         $this->assertSame(                   '2009-02-14T04:31:30+05:00', $date->get(Zend_Date::ATOM             ));
@@ -5264,9 +5274,14 @@ class Zend_DateTest extends PHPUnit_Framework_TestCase
     {
         $date = new Zend_Date('2006-01-02 23:58:59', Zend_Date::ISO_8601, 'en_US');
         $return = $date->toArray();
+
         $orig = array('day' => 02, 'month' => 01, 'year' => 2006, 'hour' => 23, 'minute' => 58,
                       'second' => 59, 'timezone' => 'MVT', 'timestamp' => 1136228339, 'weekday' => 1,
                       'dayofyear' => 1, 'week' => '01', 'gmtsecs' => 18000);
+		// You cannot get the timezone abbreviation on PHP >= 7.1.4
+		// https://3v4l.org/aAC7L#v510
+		unset($return['timezone']);
+		unset($orig['timezone']);
         $this->assertEquals($orig, $return);
     }
 

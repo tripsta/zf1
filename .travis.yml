@@ -41,8 +41,8 @@ before_script:
   - if [[ ${TRAVIS_PHP_VERSION:0:1} == "7" ]]; then sudo apt-get install python-software-properties; fi
   - if [[ ${TRAVIS_PHP_VERSION:0:1} == "7" ]]; then sudo add-apt-repository ppa:ondrej/php -y; fi
   - if [[ ${TRAVIS_PHP_VERSION:0:1} == "7" ]]; then sudo apt-get update; fi
-  - if [[ ${TRAVIS_PHP_VERSION:0:3} == "7.0" ]]; then sudo apt-get install php7.0-dev; fi
-  - if [[ ${TRAVIS_PHP_VERSION:0:3} == "7.1" ]]; then sudo apt-get install php7.1-dev; fi
+  - if [[ ${TRAVIS_PHP_VERSION:0:3} == "7.0" ]]; then sudo apt-get install php7.0-dev php7.0-intl; fi
+  - if [[ ${TRAVIS_PHP_VERSION:0:3} == "7.1" ]]; then sudo apt-get install php7.1-dev php7.1-intl; fi
   - if [[ ${TRAVIS_PHP_VERSION:0:1} == "5" ]]; then sudo apt-get install php5-dev; fi
 
   # Last installations (pcs before couchbase)

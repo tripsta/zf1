@@ -859,6 +859,6 @@ class Zend_CurrencyTest extends PHPUnit_Framework_TestCase
     public function testToCurrencyWithLocaleWhichHasParentLocale()
     {
         $currency = new Zend_Currency(null, 'es_AR');
-        $this->assertEquals('$10,00', $currency->toCurrency(10));
+        $this->assertEquals('10,00 $', $currency->toCurrency(10));
     }
 }

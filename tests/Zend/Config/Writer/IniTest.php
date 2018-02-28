@@ -45,16 +45,25 @@ require_once 'Zend/Config/Writer/Ini.php';
  */
 class Zend_Config_Writer_IniTest extends PHPUnit_Framework_TestCase
 {
+    protected $fileName;
     protected $_tempName;
 
     public function setUp()
     {
-        $this->_tempName = tempnam(dirname(__FILE__) . '/temp', 'tmp');
+        try {
+            $this->fileName = dirname(__FILE__) . '/temp';
+            if (!file_exists($this->fileName))
+                mkdir($this->fileName);
+            $this->_tempName = tempnam(dirname(__FILE__) . '/temp', 'tmp');
+        } catch (PHPUnit_Framework_Error_Notice $e) {
+            // Function "tempnam" throws notice in php 7.1 (file created)
+        }
     }
 
     public function tearDown()
     {
         @unlink($this->_tempName);
+        rmdir($this->fileName);
     }
 
     public function testNoFilenameSet()

@@ -81,7 +81,7 @@ class Zend_Crypt_Math extends Zend_Crypt_Math_BigInteger
             return random_bytes($length);
         }
         if (function_exists('mcrypt_create_iv')) {
-            $bytes = mcrypt_create_iv($length, MCRYPT_DEV_URANDOM);
+            $bytes = @mcrypt_create_iv($length, MCRYPT_DEV_URANDOM);
             if ($bytes !== false && strlen($bytes) === $length) {
                 return $bytes;
             }

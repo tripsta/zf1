@@ -1402,7 +1402,14 @@ class Zend_Locale_MathTest extends PHPUnit_Framework_TestCase
     {
         Zend_Locale_Math_PhpMath::disable();
         $this->assertEquals(1, Zend_Locale_Math_PhpMath::Pow(   1, 2));
-        $this->assertEquals(0, Zend_Locale_Math_PhpMath::Pow(null, 2));
+
+		try {
+			Zend_Locale_Math_PhpMath::Pow(null, 2);
+			$this->fail("exception expected");
+		} catch (Zend_Locale_Math_Exception $e) {
+			// success
+		}
+
         /**
          * BCMath extension doesn't actually operatest with a scientific notation (e.g. 1.2e+100)
          * So we shouldn't test numbers such as -9E+100, but probably should care about correct

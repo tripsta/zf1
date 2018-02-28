@@ -626,7 +626,7 @@ class Zend_Validate_EmailAddressTest extends PHPUnit_Framework_TestCase
     /**
      * @group GH-62
      */
-    public function testIdnHostnameInEmaillAddress()
+    public function testIdnHostnameInEmailAddress()
     {
         if (version_compare(PHP_VERSION, '5.3.0', '<')) {
             $this->markTestSkipped('idn_to_ascii() is available in intl in PHP 5.3.0+');

@@ -343,7 +343,7 @@ class Zend_Service_ReCaptcha_MailHide extends Zend_Service_ReCaptcha
         $emailPadded = str_pad($this->_email, strlen($this->_email) + $numPad, chr($numPad));
 
         /* Encrypt the email */
-        $emailEncrypted = mcrypt_encrypt(self::ENCRYPTION_CIPHER, $this->_privateKeyPacked, $emailPadded, self::ENCRYPTION_MODE, self::ENCRYPTION_IV);
+        $emailEncrypted = @mcrypt_encrypt(self::ENCRYPTION_CIPHER, $this->_privateKeyPacked, $emailPadded, self::ENCRYPTION_MODE, self::ENCRYPTION_IV);
 
         /* Return the url */
         return self::MAILHIDE_SERVER . '?k=' . $this->_publicKey . '&c=' . strtr(base64_encode($emailEncrypted), '+/', '-_');

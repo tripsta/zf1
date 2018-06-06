@@ -65,7 +65,6 @@ class Zend_Cache_Backend_RedisCluster extends Zend_Cache_Backend implements Zend
 	const OPT_SLAVE_FAILOVER = 5;
 	const REDIS_FAILOVER_DISTRIBUTE = 2;
 	const REDIS_FAILOVER_ERROR = 1;
-	const COMPRESS_PREFIX = ":\x1f\x8b";
 
 	/**
 	 * Log message
@@ -90,26 +89,11 @@ class Zend_Cache_Backend_RedisCluster extends Zend_Cache_Backend implements Zend
 	];
 
 	/**
-	 * @var int
-	 */
-	protected $_compressThreshold = 20480;
-
-	/**
-	 * @var string
-	 */
-	protected $_compressionLib;
-
-	/**
 	 * Redis object
 	 *
 	 * @var mixed redis object
 	 */
 	protected $_redis = null;
-
-	/**
-	 * @var int
-	 */
-	protected $_compressData = 3;
 
 	/**
 	 * Constructor
@@ -130,16 +114,7 @@ class Zend_Cache_Backend_RedisCluster extends Zend_Cache_Backend implements Zend
 		$serverHosts[] = $this->_options['read_timeout'];
 		$this->_redis = new RedisCluster(null, $serverHosts);
 		$this->_redis->setOption(self::OPT_SLAVE_FAILOVER, self::REDIS_FAILOVER_DISTRIBUTE);
-
-		if (isset($options['compression_lib'])) {
-			$this->_compressionLib = $options['compression_lib'];
-		} else if (function_exists('snappy_compress')) {
-			$this->_compressionLib = 'snappy';
-		} else {
-			$this->_compressionLib = 'gzip';
-		}
-
-		$this->_compressPrefix = substr($this->_compressionLib, 0, 2) . self::COMPRESS_PREFIX;
+		$this->_redis->setOption(RedisCluster::OPT_COMPRESSION, RedisCluster::COMPRESSION_LZF);
 	}
 
 	/**
@@ -156,7 +131,7 @@ class Zend_Cache_Backend_RedisCluster extends Zend_Cache_Backend implements Zend
 		}
 		$data = $this->_redis->get($id);
 		if ($data != false) {
-			return $this->_decodeData($data);
+			return $data;
 		}
 		return false;
 	}
@@ -195,13 +170,11 @@ class Zend_Cache_Backend_RedisCluster extends Zend_Cache_Backend implements Zend
 			return false;
 		}
 
-		$compressedData = $this->_encodeData($data, $this->_compressData);
-
 		$lifetime = $this->getLifetime($specificLifetime);
 		if ($lifetime === null) {
-			$return = $this->_redis->set($id, $compressedData);
+			$return = $this->_redis->set($id, $data);
 		} else {
-			$return = $this->_redis->setex($id, $lifetime, $compressedData);
+			$return = $this->_redis->setex($id, $lifetime, $data);
 		}
 		if ($return === false) {
 			$rsCode = $this->_redis->getLastError();
@@ -553,53 +526,5 @@ class Zend_Cache_Backend_RedisCluster extends Zend_Cache_Backend implements Zend
 			'infinite_lifetime' => false,
 			'get_list' => false
 		];
-	}
-
-	/**
-	 * @param string $data
-	 * @param int $level
-	 * @throws Exception
-	 * @return string
-	 */
-	protected function _encodeData($data, $level)
-	{
-		if ($level && strlen($data) >= $this->_compressThreshold) {
-			switch ($this->_compressionLib) {
-				case 'snappy':
-					$data = snappy_compress($data);
-					break;
-				case 'lzf':
-					$data = lzf_compress($data);
-					break;
-				case 'gzip':
-					$data = gzcompress($data, $level);
-					break;
-			}
-			if (!$data) {
-				throw new Exception("Could not compress cache data.");
-			}
-			return $this->_compressPrefix . $data;
-		}
-		return $data;
-	}
-
-	/**
-	 * @param bool|string $data
-	 * @return string
-	 */
-	protected function _decodeData($data)
-	{
-		if (substr($data, 2, 3) == self::COMPRESS_PREFIX) {
-			switch (substr($data, 0, 2)) {
-				case 'sn':
-					return snappy_uncompress(substr($data, 5));
-				case 'lz':
-					return lzf_decompress(substr($data, 5));
-				case 'gz':
-				case 'zc':
-					return gzuncompress(substr($data, 5));
-			}
-		}
-		return $data;
 	}
 }

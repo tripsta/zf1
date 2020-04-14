@@ -61,6 +61,7 @@ class Zend_Cache_Backend_Redis extends Zend_Cache_Backend implements Zend_Cache_
 	const DEFAULT_PORT =  6379;
 	const DEFAULT_PERSISTENT = true;
 	const DEFAULT_DBINDEX = 0;
+	const COMPRESS_PREFIX = ":\x1f\x8b";
 
 	protected $_options = array(
 		'servers' => array(
@@ -73,6 +74,22 @@ class Zend_Cache_Backend_Redis extends Zend_Cache_Backend implements Zend_Cache_
 		),
 		'key_prefix' => '',
 	);
+
+	/**
+	 * @var int
+	 */
+	protected $_compressThreshold = 20480;
+
+	/**
+	 * @var string
+	 */
+	protected $_compressionLib;
+
+	/**
+	 * @var int
+	 */
+	protected $_compressData = 3;
+
 
 	/**
 	 * Redis object
@@ -120,6 +137,16 @@ class Zend_Cache_Backend_Redis extends Zend_Cache_Backend implements Zend_Cache_
 			} else {
 				$this->_redis = null;
 			}
+
+			if (isset($options['compression_lib'])) {
+				$this->_compressionLib = $options['compression_lib'];
+			} else if (function_exists('snappy_compress')) {
+				$this->_compressionLib = 'snappy';
+			} else {
+				$this->_compressionLib = 'gzip';
+			}
+
+			$this->_compressPrefix = substr($this->_compressionLib, 0, 2) . self::COMPRESS_PREFIX;
 		}
 	}
 
@@ -161,7 +188,11 @@ class Zend_Cache_Backend_Redis extends Zend_Cache_Backend implements Zend_Cache_
 	 */
 	public function test($id)
 	{
-		return $this->_test($id, false);
+		if (!$this->_redis) {
+			return false;
+		}
+		$tmp = $this->_redis->exists($id);
+		return $tmp;
 	}
 
 	/**
@@ -200,112 +231,27 @@ class Zend_Cache_Backend_Redis extends Zend_Cache_Backend implements Zend_Cache_
 	 */
 	public function save($data, $id, $tags =[], $specificLifetime = false)
 	{
-		if (!$this->_redis)
+		if (!$this->_redis) {
 			return false;
+		}
+
+		$compressedData = $this->_encodeData($data, $this->_compressData);
 
 		$lifetime = $this->getLifetime($specificLifetime);
-
-		if (!$tags || !count($tags))
-			$tags = array('');
-		if (is_string($tags))
-			$tags = array($tags);
-
-		if (!count($tags)) {
-			$this->_redis->delete($this->_keyFromItemTags($id));
-			if ($lifetime === null) {
-				$return = $this->_redis->set($this->_keyFromId($id), $data);
-			} else {
-				$return = $this->_redis->setex($this->_keyFromId($id), $lifetime, $data);
-			}
-			$this->_redis->sAdd($this->_keyFromItemTags($id), '');
-			if ($lifetime !== null)
-				$this->_redis->setTimeout($this->_keyFromItemTags($id), $lifetime);
-			else
-				$redis = $this->_redis->persist($this->_keyFromItemTags($id));
-
-			return $return;
-		}
-
-		$tagsTTL = [];
-		foreach ($tags as $tag) {
-			if ($tag) {
-				if (!$this->_redis->exists($this->_keyFromTag($tag)))
-					$tagsTTL[$tag] = false;
-				else
-					$tagsTTL[$tag] = $this->_redis->ttl($this->_keyFromTag($tag));
-			}
-		}
-
-		$redis = $this->_redis->multi();
-		$return = [];
-		if (!$redis)
-			$return[] = $this->_redis->delete($this->_keyFromItemTags($id));
-		else
-			$redis = $redis->delete($this->_keyFromItemTags($id));
-
 		if ($lifetime === null) {
-			if (!$redis)
-				$return[] = $this->_redis->set($this->_keyFromId($id), $data);
-			else
-				$redis = $redis->set($this->_keyFromId($id), $data);
+			$return = $this->_redis->set($id, $compressedData);
 		} else {
-			if (!$redis)
-				$return[] = $this->_redis->setex($this->_keyFromId($id), $lifetime, $data);
-			else
-				$redis = $redis->setex($this->_keyFromId($id), $lifetime, $data);
+			$return = $this->_redis->setex($id, $lifetime, $compressedData);
+		}
+		if ($return === false) {
+			$rsCode = $this->_redis->getLastError();
+			$this->_log("RedisCluster::set() failed: [{$rsCode}]");
+		}
+		if (count($tags) > 0) {
+			$this->_log(self::METHOD_UNSUPPORTED_BY_REDISCLUSTER_BACKEND);
 		}
 
-		$itemTags = array($this->_keyFromItemTags($id));
-		foreach ($tags as $tag) {
-			$itemTags[] = $tag;
-			if ($tag) {
-				if (!$redis)
-					$return[] = $this->_redis->sAdd($this->_keyFromTag($tag), $id);
-				else
-					$redis = $redis->sAdd($this->_keyFromTag($tag), $id);
-
-			}
-		}
-		if (count($itemTags) > 1) {
-			if (!$redis)
-				$return[] = call_user_func_array(array($this->_redis, 'sAdd'), $itemTags);
-			else
-				$redis = call_user_func_array(array($redis, 'sAdd'), $itemTags);
-		}
-
-		if ($lifetime !== null) {
-			if (!$redis)
-				$return[] = $this->_redis->setTimeout($this->_keyFromItemTags($id), $lifetime);
-			else
-				$redis = $redis->setTimeout($this->_keyFromItemTags($id), $lifetime);
-		} else {
-			if (!$redis)
-				$return[] = $this->_redis->persist($this->_keyFromItemTags($id));
-			else
-				$redis = $redis->persist($this->_keyFromItemTags($id));
-		}
-
-		if ($redis)
-			$return = $redis->exec();
-		if (!count($return))
-			return false;
-
-		foreach ($tags as $tag) {
-			if ($tag) {
-				$ttl = $tagsTTL[$tag];
-				if ($lifetime === null && $ttl !== false && $ttl != -1) {
-					$this->_redis->persist($this->_keyFromTag($tag));
-				} else if ($lifetime !== null && ($ttl === false || ($ttl < $lifetime && $ttl != -1))) {
-					$this->_redis->setTimeout($this->_keyFromTag($tag), $lifetime);
-				}
-			}
-		}
-
-		foreach ($return as $value) {
-			if ($value === false)
-				return false;
-		}
-		return true;
+		return $return;
 	}
 
 	/**
@@ -375,24 +321,7 @@ class Zend_Cache_Backend_Redis extends Zend_Cache_Backend implements Zend_Cache_
 	 */
 	public function remove($id, $hardReset = false)
 	{
-		if (!$this->_redis)
-			return false;
-
-		if (!$id)
-			return false;
-		if (is_string($id))
-			$id = array($id);
-		if (!count($id))
-			return false;
-		$deleteIds = [];
-		foreach ($id as $i) {
-			$deleteIds[] = $this->_keyFromItemTags($i);
-			if ($hardReset)
-				$deleteIds[] = $this->_keyFromId($i);
-		}
-		$this->_redis->delete($deleteIds);
-
-		return true;
+		return (boolean)$this->_redis->delete($id);
 	}
 
 
@@ -734,35 +663,38 @@ class Zend_Cache_Backend_Redis extends Zend_Cache_Backend implements Zend_Cache_
 	 */
 	public function touch($id, $extraLifetime)
 	{
-		if (!$this->_redis)
-			return false;
-
-		$tags = $this->_redis->sMembers($this->_keyFromItemTags($id));
-
-		$lifetime = $this->getLifetime($extraLifetime);
-		$return = false;
-		if ($lifetime !== null) {
-			$this->_redis->setTimeout($this->_keyFromItemTags($id), $lifetime);
-			$return = $this->_redis->setTimeout($this->_keyFromId($id), $lifetime);
-		} else {
-			$this->_redis->persist($this->_keyFromItemTags($id));
-			$return = $this->_redis->persist($this->_keyFromId($id));
-		}
-
-		if ($tags) {
-			foreach ($tags as $tag) {
-				if ($tag) {
-					$ttl = $this->_redis->ttl($this->_keyFromTag($tag));
-					if ($ttl !== false && $ttl !== -1 && $ttl < $lifetime && $lifetime !== null)
-						$this->_redis->setTimeout($this->_keyFromTag($tag), $lifetime);
-					else if ($ttl !== false && $ttl !== -1 && $lifetime === null)
-						$this->_redis->persist($this->_keyFromTag($tag));
-				}
-			}
-		}
-
-		return $return;
+		$ttl = $this->_redis->ttl($id);
+		return $this->_redis->setTimeout($id, $ttl + $extraLifetime);
 	}
+
+	/**
+	 * Increment cache id value
+	 *
+	 * @param string $id cache id
+	 * @param int $offset
+	 * @param int $initial
+	 * @return boolean $specificLifetime or integer in seconds lifetime
+	 */
+	public function increment($id, $offset = 1, $initial = 0, $specificLifetime = false)
+	{
+		$result = $this->_redis->incrBy($id, $offset);
+		return $result;
+	}
+
+	/**
+	 * Decrement cache id value
+	 *
+	 * @param string $id cache id
+	 * @param int $offset
+	 * @param int $initial
+	 * @return boolean $specificLifetime or integer in seconds lifetime
+	 */
+	public function decrement($id, $offset = 1, $initial = 0, $specificLifetime = false)
+	{
+		$result = $this->_redis->decrBy($id, $offset);
+		return $result;
+	}
+
 
 	/**
 	 * Give (if possible) an extra lifetime to the given cache id (and only that key, no tags are updated)
@@ -806,5 +738,53 @@ class Zend_Cache_Backend_Redis extends Zend_Cache_Backend implements Zend_Cache_
 			'infinite_lifetime' => true,
 			'get_list' => false
 		);
+	}
+
+	/**
+	 * @param string $data
+	 * @param int $level
+	 * @throws Exception
+	 * @return string
+	 */
+	protected function _encodeData($data, $level)
+	{
+		if ($level && strlen($data) >= $this->_compressThreshold) {
+			switch ($this->_compressionLib) {
+				case 'snappy':
+					$data = snappy_compress($data);
+					break;
+				case 'lzf':
+					$data = lzf_compress($data);
+					break;
+				case 'gzip':
+					$data = gzcompress($data, $level);
+					break;
+			}
+			if (!$data) {
+				throw new Exception("Could not compress cache data.");
+			}
+			return $this->_compressPrefix . $data;
+		}
+		return $data;
+	}
+
+	/**
+	 * @param bool|string $data
+	 * @return string
+	 */
+	protected function _decodeData($data)
+	{
+		if (substr($data, 2, 3) == self::COMPRESS_PREFIX) {
+			switch (substr($data, 0, 2)) {
+				case 'sn':
+					return snappy_uncompress(substr($data, 5));
+				case 'lz':
+					return lzf_decompress(substr($data, 5));
+				case 'gz':
+				case 'zc':
+					return gzuncompress(substr($data, 5));
+			}
+		}
+		return $data;
 	}
 }

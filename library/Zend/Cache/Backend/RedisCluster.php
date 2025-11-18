@@ -90,6 +90,11 @@ class Zend_Cache_Backend_RedisCluster extends Zend_Cache_Backend implements Zend
 	];
 
 	/**
+	 * @var string
+	 */
+	protected $_compressPrefix = '';
+
+	/**
 	 * @var int
 	 */
 	protected $_compressThreshold = 20480;
@@ -456,7 +461,7 @@ class Zend_Cache_Backend_RedisCluster extends Zend_Cache_Backend implements Zend
 	 * @param array $tags array of tags
 	 * @return array array of any matching cache ids (string)
 	 */
-	public function getIdsMatchingAnyTags($tags = array())
+	public function getIdsMatchingAnyTags($tags = [])
 	{
 		$this->_log(self::METHOD_UNSUPPORTED_BY_REDISCLUSTER_BACKEND);
 		return [];

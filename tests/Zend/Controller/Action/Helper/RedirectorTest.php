@@ -594,14 +594,14 @@ class Zend_Controller_Action_Helper_RedirectorTest extends TestCase
 
         $this->router->removeRoute('default');
         $this->router->addRoute('default', new Zend_Controller_Router_Route(
-            ':baz/:foo/:bar/', array(
+            ':baz/:foo/:bar/', [
                 'baz' => 'default',
                 'foo' => 'index',
                 'bar' => 'index'
-            )
+            ]
         ));
 
-        $this->redirector->gotoSimple('babar', 'barbapapa', 'barbazoo', array('asd' => 1));
+        $this->redirector->gotoSimple('babar', 'barbapapa', 'barbazoo', ['asd' => 1]);
         $result = $this->redirector->getRedirectUrl();
         $expected = '/barbazoo/barbapapa/babar?asd=1';
         $this->assertEquals($expected, $result);

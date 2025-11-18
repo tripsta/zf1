@@ -450,7 +450,7 @@ class Zend_Controller_Router_Route extends Zend_Controller_Router_Route_Abstract
             unset($data[$variable]);
         }
 
-        if (!empty($data) && !$partial) {
+        if (!empty($data) && count($data) > 0 && !$partial) {
             $return = $return . '?'. http_build_query($data);
         }
 

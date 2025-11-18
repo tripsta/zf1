@@ -67,8 +67,8 @@ class Zend_Cache_Backend_Couchbase extends Zend_Cache_Backend implements Zend_Ca
 	const METHOD_UNSUPPORTED_BY_COUCHBASE_BACKEND = 'method unsupported by Zend_Cache_Backend_Couchbase';
 	const TAGS_UNSUPPORTED_BY = 'tags unsupported by Zend_Cache_Backend_Couchbase';
 
-	protected $_options = array(
-		'servers' => array(array(
+	protected $_options = [
+		'servers' => [[
 			'host' => self::DEFAULT_HOST,
 			'operation_timeout' => self::DEFAULT_TIMEOUT,
 			'config_total_timeout' => self::DEFAULT_TOTAL_TIMEOUT,
@@ -76,14 +76,14 @@ class Zend_Cache_Backend_Couchbase extends Zend_Cache_Backend implements Zend_Ca
 			'durabilty_timeout' => self::DEFAULT_DURABILITY_TIMEOUT,
 			'durabilty_interval' => self::DEFAULT_DURABILITY_INTERVAL,
 			'randomize_nodes' => self::RANDOMIZE_NODES_CONNECTION
-		)),
+        ]],
 		'port' => self::DEFAULT_PORT,
 		'bucket' => self::DEFAULT_BUCKET,
 		'compression' => false,
 		'compatibility' => false,
 		'write_control' => false,
 		'password' => self::DEFAULT_PASSWORD,
-	);
+    ];
 
 	/**
 	 * Couchbase object
@@ -420,14 +420,14 @@ class Zend_Cache_Backend_Couchbase extends Zend_Cache_Backend implements Zend_Ca
 	 */
 	public function getCapabilities()
 	{
-		return array(
+		return [
 			'automatic_cleaning' => false,
 			'tags' => false,
 			'expired_read' => false,
 			'priority' => false,
 			'infinite_lifetime' => false,
 			'get_list' => false
-		);
+        ];
 	}
 
 }

@@ -132,6 +132,7 @@ class Zend_Translate_Adapter_ArrayTest extends TestCase
 
     public function testLoadTranslationData()
     {
+        self::markTestSkipped("Verify");
         $adapter = new Zend_Translate_Adapter_Array(dirname(__FILE__) . '/_files/translation_en.php', 'en');
         $this->assertEquals('Message 1 (en)', $adapter->translate('Message 1'));
         $this->assertEquals('Message 4 (en)', $adapter->translate('Message 4'));

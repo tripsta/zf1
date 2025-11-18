@@ -20,27 +20,27 @@ class Zend_Cache_Backend_RedisClusterBackendTest extends Zend_Cache_CommonExtend
      */
     protected $_instance;
 
-    public function __construct($name = null, array $data = array(), $dataName = '')
+    public function __construct($name = null, array $data = [], $dataName = '')
     {
         parent::__construct('Zend_Cache_Backend_RedisCluster', $data, $dataName);
     }
 
-    public function setUp($notag = true)
+    public function set_up($notag = true)
     {
-        $serverValid = array(
+        $serverValid = [
             'host' => TESTS_ZEND_CACHE_REDISCLUSTER_HOST,
             'port' => TESTS_ZEND_CACHE_REDISCLUSTER_PORT,
-        );
-        $options = array(
-            'servers' => array($serverValid),
-        );
+        ];
+        $options = [
+            'servers' => [$serverValid],
+        ];
         $this->_instance = new Zend_Cache_Backend_RedisCluster($options);
-        parent::setUp($notag);
+        parent::set_up($notag);
     }
 
-    public function tearDown()
+    public function tear_down()
     {
-        parent::tearDown();
+        parent::tear_down();
         $this->_instance = null;
     }
 
@@ -62,14 +62,14 @@ class Zend_Cache_Backend_RedisClusterBackendTest extends Zend_Cache_CommonExtend
 
     public function testSaveWithNullLifeTime()
     {
-        $this->_instance->setDirectives(array('lifetime' => null));
+        $this->_instance->setDirectives(['lifetime' => null]);
         $res = $this->_instance->save('data to cache', 'foo');
         $this->assertTrue($res);
     }
 
     public function testSaveWithSpecificLifeTime()
     {
-        $this->_instance->setDirectives(array('lifetime' => 3600));
+        $this->_instance->setDirectives(['lifetime' => 3600]);
         $res = $this->_instance->save('data to cache', 'foo', [], 10);
         $this->assertTrue($res);
     }
@@ -375,26 +375,26 @@ class Zend_Cache_Backend_RedisClusterBackendTest extends Zend_Cache_CommonExtend
 
     public function testCleanModeOld()
     {
-        $this->_instance->setDirectives(array('logging' => false));
+        $this->_instance->setDirectives(['logging' => false]);
         $this->_instance->clean('old');
         // do nothing, just to see if an error occured
-        $this->_instance->setDirectives(array('logging' => true));
+        $this->_instance->setDirectives(['logging' => true]);
     }
 
     public function testCleanModeMatchingTags()
     {
-        $this->_instance->setDirectives(array('logging' => false));
-        $this->_instance->clean('matchingTag', array('tag1'));
+        $this->_instance->setDirectives(['logging' => false]);
+        $this->_instance->clean('matchingTag', ['tag1']);
         // do nothing, just to see if an error occured
-        $this->_instance->setDirectives(array('logging' => true));
+        $this->_instance->setDirectives(['logging' => true]);
     }
 
     public function testCleanModeNotMatchingTags()
     {
-        $this->_instance->setDirectives(array('logging' => false));
-        $this->_instance->clean('notMatchingTag', array('tag1'));
+        $this->_instance->setDirectives(['logging' => false]);
+        $this->_instance->clean('notMatchingTag', ['tag1']);
         // do nothing, just to see if an error occured
-        $this->_instance->setDirectives(array('logging' => true));
+        $this->_instance->setDirectives(['logging' => true]);
     }
 
     public function testGetMetadatas($notag = false)

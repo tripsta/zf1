@@ -785,7 +785,7 @@ abstract class Zend_Translate_Adapter {
 
                 $rule = Zend_Translate_Plural::getPlural($number, $regionlessLocale);
                 if (isset($this->_translate[$regionlessLocale][$plural[0]][$rule])) {
-                    $this->_routed = array();
+                    $this->_routed = [];
                     return $this->_translate[$regionlessLocale][$plural[0]][$rule];
                 }
 

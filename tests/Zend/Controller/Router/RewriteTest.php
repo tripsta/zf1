@@ -778,7 +778,7 @@ class Zend_Controller_Router_RewriteTest extends TestCase
             'default',
             new Zend_Controller_Router_Route(
                 ':controller/:action/',
-                array('controller' => 'index', 'action' => 'index')
+                ['controller' => 'index', 'action' => 'index']
             )
         );
 

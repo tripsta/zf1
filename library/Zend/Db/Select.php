@@ -1450,7 +1450,7 @@ class Zend_Db_Select
     {
         if(empty($this->_parts[self::FORCE_INDEX])) {
             if(!is_array($index)) {
-                $index = array($index);
+                $index = [$index];
             }
             $this->_parts[self::USE_INDEX] = $index;
             return $this;
@@ -1468,7 +1468,7 @@ class Zend_Db_Select
     {
         if(empty($this->_parts[self::USE_INDEX])) {
             if(!is_array($index)) {
-                $index = array($index);
+                $index = [$index];
             }
             $this->_parts[self::FORCE_INDEX] = $index;
             return $this;

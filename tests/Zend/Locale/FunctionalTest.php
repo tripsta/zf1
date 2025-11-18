@@ -1,18 +1,23 @@
 <?php
 
-class Zend_Locale_FunctionalTest extends PHPUnit_Framework_TestCase
+use Yoast\PHPUnitPolyfills\TestCases\TestCase;
+
+/**
+ * @deprecated It fails due to timezone creation.
+ */
+class Zend_Locale_FunctionalTest extends TestCase
 {
-    function setUp()
+    function set_up()
     {
         Zend_Locale::disableCache(true);
     }
 
-    function tearDown()
+    function tear_down()
     {
         Zend_Locale::disableCache(false);
     }
 
-    function localeFormats()
+    function dataProviderLocaleFormats(): array
     {
         return [
             ['ar_AE', '05/04/2015', 'د.إ.‏ 1.234,56', 'Sunday', 'Sun', 'S', 'April', 'Apr'],
@@ -43,18 +48,18 @@ class Zend_Locale_FunctionalTest extends PHPUnit_Framework_TestCase
 
             ['es_ES', '05/04/2015', '1.234,56 €', 'domingo', 'dom', 'd', 'abril', 'abr.'],
             ['es_MX', '05/04/2015', '1,234.56 $', 'domingo', 'dom', 'd', 'abril', 'abr.'],
-            ['es_AR', '05/04/2015', '1.234,56 $', 'domingo', 'dom', 'd', 'abril', 'abr.'],
+            ['es_AR', '05/04/2015', '$1.234,56', 'domingo', 'dom', 'd', 'abril', 'abr.'],
             ['es_CL', '05/04/2015', '$1.234,56', 'domingo', 'dom', 'd', 'abril', 'abr.'],
-            ['es_CO', '5/04/2015', '1.234,56 $', 'domingo', 'dom', 'd', 'abril', 'abr.'],
-            ['es_CR', '05/04/2015', '1.234,56 ₡', 'domingo', 'dom', 'd', 'abril', 'abr.'],
+            ['es_CO', '5/04/2015', '$1.234,56', 'domingo', 'dom', 'd', 'abril', 'abr.'],
+            ['es_CR', '05/04/2015', '₡1.234,56', 'domingo', 'dom', 'd', 'abril', 'abr.'],
             ['es_VE', '05/04/2015', 'Bs.1.234,56', 'domingo', 'dom', 'd', 'abril', 'abr.'],
-            ['es_BO', '05/04/2015', '1.234,56 Bs', 'domingo', 'dom', 'd', 'abril', 'abr.'],
+            ['es_BO', '05/04/2015', 'Bs1.234,56', 'domingo', 'dom', 'd', 'abril', 'abr.'],
             ['es_EC', '05/04/2015', '$1.234,56', 'domingo', 'dom', 'd', 'abril', 'abr.'],
-            ['es_SV', '05/04/2015', '1,234.56 $', 'domingo', 'dom', 'd', 'abril', 'abr.'],
-            ['es_GT', '5/04/2015', '1,234.56 Q', 'domingo', 'dom', 'd', 'abril', 'abr.'],
-            ['es_HN', '05/04/2015', '1,234.56 L', 'domingo', 'dom', 'd', 'abril', 'abr.'],
-            ['es_NI', '05/04/2015', '1,234.56 C$', 'domingo', 'dom', 'd', 'abril', 'abr.'],
-            ['es_PA', '05/04/2015', '1,234.56 B/.', 'domingo', 'dom', 'd', 'abril', 'abr.'],
+            ['es_SV', '05/04/2015', '$1,234.56', 'domingo', 'dom', 'd', 'abril', 'abr.'],
+            ['es_GT', '5/04/2015', 'Q1,234.56', 'domingo', 'dom', 'd', 'abril', 'abr.'],
+            ['es_HN', '05/04/2015', 'L1,234.56', 'domingo', 'dom', 'd', 'abril', 'abr.'],
+            ['es_NI', '05/04/2015', 'C$1,234.56', 'domingo', 'dom', 'd', 'abril', 'abr.'],
+            ['es_PA', '05/04/2015', 'B/.1,234.56', 'domingo', 'dom', 'd', 'abril', 'abr.'],
 
             ['et_EE', '4/05/2015', '1 234,56 €', 'pühapäev', 'püh', 'P', 'aprill', 'apr'],
 
@@ -102,12 +107,12 @@ class Zend_Locale_FunctionalTest extends PHPUnit_Framework_TestCase
     }
 
     /**
-     * @dataProvider localeFormats
+     * @dataProvider dataProviderLocaleFormats
      */
-    function testlocale($locale, $shortDate, $amount, $weekday,
-        $weekdayShort, $weekDayNarrow, $monthName, $monthNameShort)
+    function testLocale($locale, $shortDate, $amount, $weekday,
+        $weekdayShort, $weekDayNarrow, $monthName, $monthNameShort): void
     {
-        $myDate = $this->dateShortFormatInLocale($locale);
+        $myDate = $this->_dateShortFormatInLocale($locale);
 
         $this->assertEquals($shortDate, $myDate);
         $this->_testDateFormatParsing($myDate, $locale);
@@ -119,24 +124,24 @@ class Zend_Locale_FunctionalTest extends PHPUnit_Framework_TestCase
         $currency = new Zend_Currency($locale);
         $this->assertSame($amount, $currency->toCurrency(1234.56, $options));
 
-        $date = $this->dateInLocale($locale);
+        $date = $this->_dateInLocale($locale);
         $this->_testDaysAndMonthTranslations($date, $weekday, $weekdayShort,
             $weekDayNarrow, $monthName, $monthNameShort);
 
     }
 
-    function dateShortFormatInLocale($locale)
+    private function _dateShortFormatInLocale($locale): string
     {
-        $date = $this->dateInLocale($locale);
+        $date = $this->_dateInLocale($locale);
         return $date->get(Zend_Date::DATE_SHORT);
     }
 
-    function dateInLocale($locale)
+    private function _dateInLocale($locale): Zend_Date
     {
-        return new Zend_Date(gmmktime(0, 0, 0, 4, 5, 2015), null, $locale);
+        return new Zend_Date('05/04/2015', null, $locale);
     }
 
-    private function _testDateFormatParsing($otherDate, $locale)
+    private function _testDateFormatParsing($otherDate, $locale): void
     {
         $date = new Zend_Date($otherDate, null, $locale);
         $shortDate = $date->get(Zend_Date::DATE_SHORT);
@@ -145,7 +150,7 @@ class Zend_Locale_FunctionalTest extends PHPUnit_Framework_TestCase
     }
 
     private function _testDaysAndMonthTranslations($date, $weekday, $weekdayShort,
-        $weekDayNarrow, $monthName, $monthNameShort)
+        $weekDayNarrow, $monthName, $monthNameShort): void
     {
         $this->assertEquals($weekday, $date->get(Zend_Date::WEEKDAY));
         $this->assertEquals($weekdayShort,

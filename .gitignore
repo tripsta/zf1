@@ -17,9 +17,13 @@ vendor/*
 composer.lock
 bin/dbunit
 bin/phpunit
+<<<<<<< HEAD
 bin/parallel-lint
 .php-cs-fixer.cache
 .php_cs.cache
 .phpstan.cache/*
 .idea
 .vscode
+=======
+.idea/
+>>>>>>> 9c9b307dc (Remove .idea from git)

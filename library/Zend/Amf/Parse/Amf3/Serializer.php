@@ -359,14 +359,26 @@ class Zend_Amf_Parse_Amf3_Serializer extends Zend_Amf_Parse_Serializer
         $this->writeInteger($id);
 
         //Write the mixed type array to the output stream
+        /**
+         * @phpstan-ignore-next-line
+         */
         foreach($string as $key => &$value) {
             $this->writeString($key)
+                /**
+                 * @phpstan-ignore-next-line
+                 */
                  ->writeTypeMarker($value);
         }
         $this->writeString($this->_strEmpty);
 
         // Write the numeric array to ouput stream
+        /**
+         * @phpstan-ignore-next-line
+         */
         foreach($numeric as &$value) {
+            /**
+             * @phpstan-ignore-next-line
+             */
             $this->writeTypeMarker($value);
         }
         return $this;

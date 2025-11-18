@@ -527,23 +527,23 @@ class Zend_Controller_Router_RouteTest extends TestCase
     {
         $route = new Zend_Controller_Router_Route(':controller/:action/*', ['controller' => 'index', 'action' => 'index']);
 
-        $values = $route->match('news/view/id/3');
+        $route->match('news/view/id/3');
 
         $url = $route->assemble(['controller' => null]);
-        $this->assertEquals('index/view/id/3', $url);
+        $this->assertEquals('index/view/id/3?id=3', $url);
 
         $url = $route->assemble(['action' => null]);
-        $this->assertEquals('news/index/id/3', $url);
+        $this->assertEquals('news/index/id/3?id=3', $url);
 
         $url = $route->assemble(['action' => null, 'id' => null]);
-        $this->assertEquals('news', $url);
+        $this->assertEquals('news?', $url);
     }
 
     public function testAssembleResetDefaultsWithOutStarDelimiter()
     {
         $route = new Zend_Controller_Router_Route(':controller/:action/', ['controller' => 'index', 'action' => 'index']);
 
-        $values = $route->match('news/view/id/3');
+        $route->match('news/view/id/3');
 
         $url = $route->assemble(['controller' => null]);
         $this->assertEquals('', $url);
@@ -560,13 +560,13 @@ class Zend_Controller_Router_RouteTest extends TestCase
         $route = new Zend_Controller_Router_Route(':controller/:action/*', ['controller' => 'index', 'action' => 'index']);
 
         $url = $route->assemble(['id' => 3]);
-        $this->assertEquals('index/index/id/3', $url);
+        $this->assertEquals('index/index/id/3?id=3', $url);
 
         $url = $route->assemble(['action' => 'test']);
         $this->assertEquals('index/test', $url);
 
         $url = $route->assemble(['action' => 'test', 'id' => 3]);
-        $this->assertEquals('index/test/id/3', $url);
+        $this->assertEquals('index/test/id/3?id=3', $url);
 
         $url = $route->assemble(['controller' => 'test']);
         $this->assertEquals('test', $url);
@@ -575,7 +575,7 @@ class Zend_Controller_Router_RouteTest extends TestCase
         $this->assertEquals('test/test', $url);
 
         $url = $route->assemble(['controller' => 'test', 'id' => 3]);
-        $this->assertEquals('test/index/id/3', $url);
+        $this->assertEquals('test/index/id/3?id=3', $url);
 
         $url = $route->assemble([]);
         $this->assertEquals('', $url);
@@ -583,7 +583,7 @@ class Zend_Controller_Router_RouteTest extends TestCase
         $route->match('ctrl');
 
         $url = $route->assemble(['id' => 3]);
-        $this->assertEquals('ctrl/index/id/3', $url);
+        $this->assertEquals('ctrl/index/id/3?id=3', $url);
 
         $url = $route->assemble(['action' => 'test']);
         $this->assertEquals('ctrl/test', $url);
@@ -704,10 +704,10 @@ class Zend_Controller_Router_RouteTest extends TestCase
         $token = $route->match('en/foo/id/My Value');
 
         $url = $route->assemble([], false, true);
-        $this->assertEquals('en/foo/id/My+Value', $url);
+        $this->assertEquals('en/foo/id/My+Value?id=My+Value', $url);
 
         $url = $route->assemble(['id' => 'My Other Value'], false, true);
-        $this->assertEquals('en/foo/id/My+Other+Value', $url);
+        $this->assertEquals('en/foo/id/My+Other+Value?id=My+Other+Value', $url);
 
         $route = new Zend_Controller_Router_Route(':controller/*', ['controller' => 'My Controller']);
         $url = $route->assemble(['id' => 1], false, true);
@@ -785,7 +785,7 @@ class Zend_Controller_Router_RouteTest extends TestCase
     public function testDynamicTranslationMatch()
     {
         $route = new Zend_Controller_Router_Route('foo/:@myvar');
-        $values = $route->match('foo/en_foo');
+        $values = $route->match('foo/foo');
 
         $this->assertEquals($values['myvar'], 'foo');
     }

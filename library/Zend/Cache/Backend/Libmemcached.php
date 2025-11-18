@@ -512,7 +512,7 @@ class Zend_Cache_Backend_Libmemcached extends Zend_Cache_Backend implements Zend
 		return $data;
 	}
 
-	public function saveMulti($data, $tags = array(), $specificLifetime = false)
+	public function saveMulti($data, $tags = [], $specificLifetime = false)
 	{
 		$result = false;
 		if (is_array($data)) {

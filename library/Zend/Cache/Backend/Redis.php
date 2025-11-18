@@ -62,17 +62,17 @@ class Zend_Cache_Backend_Redis extends Zend_Cache_Backend implements Zend_Cache_
 	const DEFAULT_PERSISTENT = true;
 	const DEFAULT_DBINDEX = 0;
 
-	protected $_options = array(
-		'servers' => array(
-			array(
+	protected $_options = [
+		'servers' => [
+			[
 				'host' => self::DEFAULT_HOST,
 				'port' => self::DEFAULT_PORT,
 				'persistent' => self::DEFAULT_PERSISTENT,
 				'dbindex' => self::DEFAULT_DBINDEX,
-			),
-		),
+            ],
+        ],
 		'key_prefix' => '',
-	);
+    ];
 
 	/**
 	 * Redis object
@@ -206,9 +206,9 @@ class Zend_Cache_Backend_Redis extends Zend_Cache_Backend implements Zend_Cache_
 		$lifetime = $this->getLifetime($specificLifetime);
 
 		if (!$tags || !count($tags))
-			$tags = array('');
+			$tags = [''];
 		if (is_string($tags))
-			$tags = array($tags);
+			$tags = [$tags];
 
 		if (!count($tags)) {
 			$this->_redis->delete($this->_keyFromItemTags($id));
@@ -255,7 +255,7 @@ class Zend_Cache_Backend_Redis extends Zend_Cache_Backend implements Zend_Cache_
 				$redis = $redis->setex($this->_keyFromId($id), $lifetime, $data);
 		}
 
-		$itemTags = array($this->_keyFromItemTags($id));
+		$itemTags = [$this->_keyFromItemTags($id)];
 		foreach ($tags as $tag) {
 			$itemTags[] = $tag;
 			if ($tag) {
@@ -268,9 +268,9 @@ class Zend_Cache_Backend_Redis extends Zend_Cache_Backend implements Zend_Cache_
 		}
 		if (count($itemTags) > 1) {
 			if (!$redis)
-				$return[] = call_user_func_array(array($this->_redis, 'sAdd'), $itemTags);
+				$return[] = call_user_func_array([$this->_redis, 'sAdd'], $itemTags);
 			else
-				$redis = call_user_func_array(array($redis, 'sAdd'), $itemTags);
+				$redis = call_user_func_array([$redis, 'sAdd'], $itemTags);
 		}
 
 		if ($lifetime !== null) {
@@ -381,7 +381,7 @@ class Zend_Cache_Backend_Redis extends Zend_Cache_Backend implements Zend_Cache_
 		if (!$id)
 			return false;
 		if (is_string($id))
-			$id = array($id);
+			$id = [$id];
 		if (!count($id))
 			return false;
 		$deleteIds = [];
@@ -410,7 +410,7 @@ class Zend_Cache_Backend_Redis extends Zend_Cache_Backend implements Zend_Cache_
 		if (!$tag)
 			return false;
 		if (is_string($tag))
-			$id = array($tag);
+			$id = [$tag];
 		if (!count($tag))
 			return false;
 		$deleteTags = [];
@@ -457,7 +457,7 @@ class Zend_Cache_Backend_Redis extends Zend_Cache_Backend implements Zend_Cache_
 
 		if (is_array($member)) {
 			$redis = $this->_redis;
-			$return = call_user_func_array(array($redis, 'sAdd'), array_merge(array($this->_keyFromId($set)), $member));
+			$return = call_user_func_array([$redis, 'sAdd'], array_merge([$this->_keyFromId($set)], $member));
 		} else {
 			$return = $this->_redis->sAdd($this->_keyFromId($set), $member);
 		}
@@ -483,7 +483,7 @@ class Zend_Cache_Backend_Redis extends Zend_Cache_Backend implements Zend_Cache_
 			if (!count($member))
 				return true;
 			$redis = $this->_redis;
-			$return = call_user_func_array(array($redis, 'sRem'), array_merge(array($this->_keyFromId($set)), $member));
+			$return = call_user_func_array([$redis, 'sRem'], array_merge([$this->_keyFromId($set)], $member));
 		} else {
 			$return = $this->_redis->sRem($this->_keyFromId($set), $member);
 		}
@@ -652,7 +652,7 @@ class Zend_Cache_Backend_Redis extends Zend_Cache_Backend implements Zend_Cache_
 		if (!$tags)
 			return [];
 		if ($tags && is_string($tags))
-			$tags = array($tags);
+			$tags = [$tags];
 
 		$matchTags = [];
 		foreach ($tags as $tag) {
@@ -693,7 +693,7 @@ class Zend_Cache_Backend_Redis extends Zend_Cache_Backend implements Zend_Cache_
 		if (!$tags)
 			return [];
 		if ($tags && is_string($tags))
-			$tags = array($tags);
+			$tags = [$tags];
 
 		$return = [];
 		foreach ($tags as $tag) {
@@ -798,13 +798,13 @@ class Zend_Cache_Backend_Redis extends Zend_Cache_Backend implements Zend_Cache_
 	 */
 	public function getCapabilities()
 	{
-		return array(
+		return [
 			'automatic_cleaning' => true,
 			'tags' => true,
 			'expired_read' => false,
 			'priority' => false,
 			'infinite_lifetime' => true,
 			'get_list' => false
-		);
+        ];
 	}
 }
